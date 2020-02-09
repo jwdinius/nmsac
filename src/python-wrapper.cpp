@@ -1,3 +1,4 @@
+#include <chrono>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
@@ -60,33 +61,53 @@ struct PythonNMSAC {
       */
     PythonNMSAC(boopy::list const & srcPts, boopy::list const & tgtPts,
             PyConfigNMSAC const & pyConfig) {
-        source_pts_.resize(boopy::len(srcPts), boopy::len(srcPts[0]));
-        for (size_t i = 0; i < source_pts_.n_rows; ++i) {
-            for (size_t j = 0; j < source_pts_.n_cols; ++j) {
-                source_pts_(i, j) = boopy::extract<double>(srcPts[i][j]);
+        //! public members for consumption on the python-side
+        arma::mat source_pts(boopy::len(srcPts), boopy::len(srcPts[0]));
+        arma::mat target_pts(boopy::len(tgtPts), boopy::len(tgtPts[0]));
+        nmsac::ConfigNMSAC config;
+        for (size_t i = 0; i < source_pts.n_rows; ++i) {
+            for (size_t j = 0; j < source_pts.n_cols; ++j) {
+                source_pts(i, j) = boopy::extract<double>(srcPts[i][j]);
             }
         }
 
-        target_pts_.resize(boopy::len(tgtPts), boopy::len(tgtPts[0]));
-        for (size_t i = 0; i < target_pts_.n_rows; ++i) {
-            for (size_t j = 0; j < target_pts_.n_cols; ++j) {
-                target_pts_(i, j) = boopy::extract<double>(tgtPts[i][j]);
+        for (size_t i = 0; i < target_pts.n_rows; ++i) {
+            for (size_t j = 0; j < target_pts.n_cols; ++j) {
+                target_pts(i, j) = boopy::extract<double>(tgtPts[i][j]);
             }
         }
 
-        config_.random_seed = pyConfig.randomSeed;
-        config_.print_status = pyConfig.printStatus;
-        config_.ps = pyConfig.ps;
-        config_.max_iter = pyConfig.maxIter;
-        config_.min_iter = pyConfig.minIter;
-        config_.k = pyConfig.k;
-        config_.points_per_sample = pyConfig.pointsPerSample;
-        config_.epsilon = pyConfig.epsilon;
-        config_.n_pair_thresh = pyConfig.nPairThresh;
-        config_.pair_dist_thresh = pyConfig.pairDistThresh;
-        config_.max_iter_icp = pyConfig.maxIterIcp;
-        config_.tol_icp = pyConfig.tolIcp;
-        config_.outlier_rej_icp = pyConfig.outlierRejIcp;
+        config.random_seed = pyConfig.randomSeed;
+        config.print_status = pyConfig.printStatus;
+        config.ps = pyConfig.ps;
+        config.max_iter = pyConfig.maxIter;
+        config.min_iter = pyConfig.minIter;
+        config.k = pyConfig.k;
+        config.points_per_sample = pyConfig.pointsPerSample;
+        config.epsilon = pyConfig.epsilon;
+        config.n_pair_thresh = pyConfig.nPairThresh;
+        config.pair_dist_thresh = pyConfig.pairDistThresh;
+        config.max_iter_icp = pyConfig.maxIterIcp;
+        config.tol_icp = pyConfig.tolIcp;
+        config.outlier_rej_icp = pyConfig.outlierRejIcp;
+
+        //! and make the main call (with timing)
+        arma::mat33 R;
+        arma::vec3 t;
+        auto const start = std::chrono::high_resolution_clock::now();
+        nmsac::main(source_pts, target_pts, config, R, t, num_inliers_, num_iters_);
+        auto const end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
+        call_time_ = elapsed.count();
+
+        for (size_t i = 0; i < 3; ++i) {
+            boopy::list row;
+            for (size_t j = 0; j < 3; ++j) {
+                row.append(R(i, j));
+            }
+            t_.append(t(i));
+            R_.append(row);
+        }
     }
 
     /** PythonNMSAC::~PythonNMSAC()
@@ -99,37 +120,17 @@ struct PythonNMSAC {
      */
     ~PythonNMSAC() { }
 
-    // XXX(jwd) - wrap the timer around this call in python script
-    void nonMinimalRegistration() {
-        //! setup main call
-        arma::mat33 R;
-        arma::vec3 t;
-        //! and make the main call
-        // TODO(jwd) - add correspondences as output in `main`
-        nmsac::main(source_pts_, target_pts_, config_, R, t, num_inliers_, num_iters_);
-        for (size_t i = 0; i < 3; ++i) {
-            boopy::list row;
-            for (size_t j = 0; j < 3; ++j) {
-                row.append(R(i, j));
-            }
-            t_.append(t(i));
-            R_.append(row);
-        }
-    }
-
-    //! public members for consumption on the python-side
-    arma::mat source_pts_;
-    arma::mat target_pts_;
-    nmsac::ConfigNMSAC config_;
+    //! public members
     size_t num_inliers_;
     size_t num_iters_;
     boopy::list R_;
     boopy::list t_;
+    double call_time_;
 };
 
 BOOST_PYTHON_MODULE(pynmsac) {
     PyEval_InitThreads();
-    
+
     using namespace boost::python;
     /**
      * @brief python module for nonminimal sampling and consensus registration
@@ -151,12 +152,12 @@ BOOST_PYTHON_MODULE(pynmsac) {
         .def_readwrite("maxIterIcp", &PyConfigNMSAC::maxIterIcp)
         .def_readwrite("tolIcp", &PyConfigNMSAC::tolIcp)
         .def_readwrite("outlierRejIcp", &PyConfigNMSAC::outlierRejIcp);
-    
+
     //! expose PyNMSAC - NOTE: no default constructor is defined/exposed
     class_<PythonNMSAC>("PythonNMSAC", init<boopy::list, boopy::list, PyConfigNMSAC>())
-        .def("nonMinimalRegistration", &PythonNMSAC::nonMinimalRegistration)
         .def_readonly("R", &PythonNMSAC::R_)
         .def_readonly("t", &PythonNMSAC::t_)
         .def_readonly("numInliers", &PythonNMSAC::num_inliers_)
-        .def_readonly("numIters", &PythonNMSAC::num_iters_);
+        .def_readonly("numIters", &PythonNMSAC::num_iters_)
+        .def_readonly("hiResCallTime", &PythonNMSAC::call_time_);
 }

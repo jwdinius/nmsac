@@ -1,5 +1,6 @@
 #pragma once
 //! c/c++ headers
+#include <string>
 //! dependency headers
 //! project headers
 #include "types.hpp"

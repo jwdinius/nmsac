@@ -64,6 +64,7 @@ size_t nmsac::count_correspondences(arma::mat const & src, nmsac::KDTreeSearcher
 }
 
 void nmsac::to_homog(arma::mat33 const & R, arma::vec3 const & t, arma::mat44 & H) noexcept {
+    H.eye();
     H( arma::span(0, 2), arma::span(0, 2) ) = R;
     H( arma::span(0, 2), 3 ) = t;
     return;

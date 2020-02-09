@@ -39,7 +39,7 @@ target_link_libraries(nmsac ${ARMADILLO_LIBRARIES}
 
 add_library(pynmsac SHARED src/python-wrapper.cpp)
 set_target_properties(pynmsac PROPERTIES PREFIX "")
-target_link_libraries(pynmsac ${BOOST_LIBRARIES} ${PYTHON_LIBRARIES} nmsac)
+target_link_libraries(pynmsac ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} nmsac)
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/__init__.py "__all__ = ['pynmsac']")
 
 # Set up installation targets
@@ -65,3 +65,12 @@ target_link_libraries(sampling-unit nmsac
     ${MLPACK_LIBRARIES}
 )
 add_test(SamplingUtilsTest sampling-unit)
+
+add_executable(main-unit tests/main-unit.cpp)
+target_link_libraries(main-unit nmsac
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    ${MLPACK_LIBRARIES}
+)
+add_test(MainTest main-unit)

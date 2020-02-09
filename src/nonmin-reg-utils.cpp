@@ -1,7 +1,7 @@
 //! c/c++ headers
 #include <iostream>
 //! dependency headers (from Registration project)
-#include <mlpack/core.hpp>  //XXX (jwd) addresses strange compile-time issue
+#include <mlpack/core.hpp>  // XXX (jwd) addresses strange compile-time issue
 #include <correspondences/correspondences.hpp>
 #include <registration/registration.hpp>
 //! project headers

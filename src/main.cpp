@@ -34,7 +34,7 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
     } else if (tgt_pts.n_rows != 3) {
         std::cout << static_cast<std::string>(__func__) << ": Second argument must be a matrix with 3 rows" << std::endl;
         return false;
-    } 
+    }
 
     //! make a copy of src_pts and tgt_pts
     arma::mat const src_pts_orig = src_pts;
@@ -48,6 +48,7 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
     max_inliers = 0;
 
     //! for repeatable sampling
+    std::cout << config.random_seed << std::endl;
     arma::arma_rng::set_seed(config.random_seed);
 
     //! setup KDTreeSearcher for finding nearest-neighbor points between
@@ -61,15 +62,14 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
         arma::mat const src_smpl = sample_cols(src_pts, n);
         //! reset tgt_pts back to original for next set of inner passes
         tgt_pts = tgt_pts_orig;
-        size_t inner_count = 0;
 
-        while (tgt_pts.n_cols > 2*n && inner_count < 2) {
-            ++inner_count;
-            //! count correspondences
-            if (config.print_status) {
-                std::cout << "Current size of sampled tgt points: " << tgt_pts.n_cols << std::endl;
-            }
+        while (tgt_pts.n_cols > 2*n) {  // XXX reeval what this condition should be
             arma::mat const tgt_smpl = sample_cols(tgt_pts, n);
+
+            if (config.print_status) {
+                std::cout << "Remaining target points to sample from: " << tgt_pts.n_cols << std::endl;
+            }
+
             //! solve the nonminimal registration problem
             arma::mat33 R_nmr;
             arma::vec3 t_nmr;
@@ -84,14 +84,20 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
                             config.max_iter_icp, config.tol_icp, config.outlier_rej_icp, H_icp)) {
                     std::cout << static_cast<std::string>(__func__) <<
                         ": iterative_closest_point failed." << std::endl;
-                    return false;
+                    continue;
                 }
 
+                //! decompose H into rotation, R, and translation, t, components
                 arma::mat33 R_icp;
                 arma::vec3 t_icp;
                 from_homog(R_icp, t_icp, H_icp);
+
+                //! transform source points onto target points and count the number of inliers
                 arma::mat const src_pts_orig_xform = R_icp * src_pts_orig + arma::repmat(t_icp, 1, src_pts_orig.n_cols);
                 auto const num_inliers = count_correspondences(src_pts_orig_xform, tgt_tree, config.epsilon);
+
+                //! increase iteration count
+                ++iter;
 
                 //! check if the current fit is better than previous fits
                 if (num_inliers > max_inliers) {
@@ -99,16 +105,23 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
                     optimal_rot = R_icp;
                     optimal_trans = t_icp;
                     if (config.print_status) {
+                        std::cout << "////////////////////////////////" << std::endl;
                         std::cout << "Best so-far consensus size: " << max_inliers << std::endl;
-                        std::cout << "--------------------------------" << std::endl;
+                        std::cout << "////////////////////////////////" << std::endl;
                     }
                     //! compute stopping criteria
                     auto const prob_I = static_cast<double>(max_inliers) / static_cast<double>(src_pts_orig.n_cols);
                     Tmax = std::log(1. - config.ps) / std::log(1. - std::pow(prob_I, config.k));
                 }
+            } else {
+                //! nonmin solver failed, go to next iteration
+                continue;
             }
-            ++iter;
-            if (iter >= std::min(static_cast<size_t>(Tmax), config.min_iter)) {
+
+            if (iter >= static_cast<size_t>(Tmax)) {
+                if (config.print_status) {
+                    std::cout << "Algorithm converged.  Exiting..." << std::endl;
+                }
                 stop = true;
                 break;
             }

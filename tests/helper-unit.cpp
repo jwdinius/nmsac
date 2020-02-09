@@ -24,7 +24,7 @@ static const double FLOAT_TOL(1e-7);
 
 BOOST_AUTO_TEST_CASE( count_correspondences_test ) {
     //! load unit test data from json
-    std::ifstream ifs(data_path + "/countCorrespondences.json");
+    std::ifstream ifs(data_path + "/count-correspondences.json");
     std::string json_str = std::string((std::istreambuf_iterator<char>(ifs)),
             std::istreambuf_iterator<char>());
     json json_data = json::parse(json_str);

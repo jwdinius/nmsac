@@ -15,7 +15,7 @@ using namespace nmsac;
 static const double FLOAT_TOL(1e-7);
 
 BOOST_AUTO_TEST_CASE( reordering ) {
-    arma::arma_rng::set_seed(11011);
+    arma::arma_rng::set_seed(11011);  //! by setting the seed here, we can also test repeatability in the test-suite
     arma::mat X(3, 6);
     X << 1 << 2 << 3 << 4 << 5 << 6 << arma::endr
         << 7 << 8 << 9 << 10 << 11 << 12 << arma::endr
