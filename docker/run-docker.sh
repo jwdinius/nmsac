@@ -6,5 +6,5 @@ docker run -it --rm \
     --name nmsac-c \
     --net host \
     --privileged \
-    --runtime=nvidia \
+    $1 \
     nmsac

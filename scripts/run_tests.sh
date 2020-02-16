@@ -1,5 +1,5 @@
 mkdir build \
     && cd build \
-    && cmake -DORTOOLS_ROOT=$ORTOOLS_ROOT .. \
+    && cmake .. \
     && make -j2 \
     && make test

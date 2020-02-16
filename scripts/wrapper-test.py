@@ -142,6 +142,27 @@ if __name__ == "__main__":
         print "NMSAC took {}sec".format(callTime)
         source_pts_xform = np.dot(H_out, source_pts)
 
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(source_pts[0, :], source_pts[1, :], source_pts[2, :], 'b.', label='src')
+        ax.scatter(target_pts[0, :], target_pts[1, :], target_pts[2, :], 'r.', label='tgt')
+        ax.set_title('Two Unaligned Point Clouds')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        ax.legend()
+        # check #
+        fig1 = plt.figure()
+        axx = fig1.add_subplot(111, projection='3d')
+        axx.scatter(target_pts[0, :], target_pts[1, :], target_pts[2, :], 'r.', label='tgt')
+        axx.scatter(source_pts_xform[0, :], source_pts_xform[1, :], source_pts_xform[2, :], 'b+', label='src xform')
+        axx.set_title('Two Aligned Point Clouds - Solution from NMSAC')
+        axx.set_xlabel('x')
+        axx.set_ylabel('y')
+        axx.set_zlabel('z')
+        axx.legend(loc='lower left')
+        plt.show()
+
     # write json
     if args.output:
         data = {}
