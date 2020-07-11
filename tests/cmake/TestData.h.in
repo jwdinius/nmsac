@@ -1,0 +1,3 @@
+#pragma once
+inline constexpr char DATA_PATH[] = "@DATA_PATH@";
+inline constexpr double FLOAT_TOL = @FLOAT_TOL@;

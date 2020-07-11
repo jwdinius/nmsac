@@ -12,13 +12,31 @@ ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
 #### UPDATE BEFORE REMAINDER
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils apt-transport-https ca-certificates \
+    gnupg software-properties-common wget
+
+#### pull latest cmake from kitware
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 
 # INSTALL SYSTEM-WIDE DEPENDENCIES
-RUN apt-get update && apt-get install -y --fix-missing cmake pkg-config git wget \
-    build-essential libboost-all-dev zip gfortran cppad python-dev python-pip
+RUN apt-get update && apt-get install -y --fix-missing cmake pkg-config git \
+    build-essential libboost-all-dev zip gfortran cppad python-dev python-pip python3-dev python3-pip
 RUN apt-get install -y --allow-unauthenticated libomp-dev libopenblas-dev liblapack-dev \
     libarpack++2-dev
+
+# INSTALL NUMPY AND PYTHON DEPENDENCIES
+RUN pip install --no-cache-dir numpy==1.16.2
+RUN pip install --no-cache-dir matplotlib==2.0.2
+RUN pip install --no-cache-dir cpplint==1.4.5
+RUN pip install --no-cache-dir pytest==4.6.11
+
+RUN python3 -m pip install --no-cache-dir numpy==1.16.2
+RUN python3 -m pip install --no-cache-dir matplotlib==2.0.2
+RUN python3 -m pip install --no-cache-dir cpplint==1.4.5
+RUN python3 -m pip install --no-cache-dir pytest==5.4.3
+
+RUN apt-get install -y freeglut3-dev python-tk python3-tk sudo
 
 # INSTALL IPOPT
 COPY install_ipopt.sh /
@@ -46,18 +64,18 @@ RUN cd json* && mkdir build && cd build \
     && cmake .. \
     && make -j2 && make install
 
+# INSTALL PYBIND11 (downloaded from github)
+RUN wget https://github.com/pybind/pybind11/archive/v2.5.0.zip \
+    && unzip v2.5.0.zip
+RUN cd pybind* && mkdir build && cd build \
+    && cmake .. \
+    && make -j2 && make install
+
 # INSTALL OR-TOOLS (from binary)
 RUN apt-get install -y zlib1g-dev
 RUN wget https://github.com/google/or-tools/releases/download/v7.4/or-tools_ubuntu-18.04_v7.4.7247.tar.gz \
     && tar -xvf or-tools_ubuntu-18.04_v7.4.7247.tar.gz
 ENV ORTOOLS_ROOT=/or-tools_Ubuntu-18.04-64bit_v7.4.7247
-
-# INSTALL NUMPY
-RUN pip install --no-cache-dir numpy==1.16.2
-RUN pip install --no-cache-dir matplotlib==2.0.2
-RUN pip install --no-cache-dir cpplint==1.4.5
-
-RUN apt-get install -y freeglut3-dev python-tk sudo
 
 # REMOVE ARCHIVES
 RUN rm *.tar.* && rm *.zip
