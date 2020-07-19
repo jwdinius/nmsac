@@ -8,10 +8,10 @@
 namespace transforms {
 
 using KDTreeSearcher = mlpack::neighbor::NeighborSearch<
-   mlpack::neighbor::NearestNeighborSort,
-   mlpack::metric::EuclideanDistance,
-   arma::mat,
-   mlpack::tree::KDTree
+  mlpack::neighbor::NearestNeighborSort,
+  mlpack::metric::EuclideanDistance,
+  arma::mat,
+  mlpack::tree::KDTree
 >;
 
 /**
@@ -27,6 +27,6 @@ using KDTreeSearcher = mlpack::neighbor::NeighborSearch<
  * @return
  */
 bool iterative_closest_point(arma::mat const & src_pts, arma::mat const & dst_pts,
-        arma::mat44 & H_init, size_t const & max_its, double const & tolerance, double const & reject_ratio,
-        arma::mat44 & H_optimal) noexcept;
+    arma::mat44 & H_init, size_t const & max_its, double const & tolerance,
+    double const & reject_ratio, arma::mat44 & H_optimal) noexcept;
 }  // namespace transforms

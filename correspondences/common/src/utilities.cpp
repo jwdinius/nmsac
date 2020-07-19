@@ -34,8 +34,8 @@ double cor::consistency(arma::vec3 const & si, arma::vec3 const & tj, arma::vec3
  * @param [in] dst_pts target points
  * @return weight tensor for optimization objective; `w_{ijkl}` from reference
  */
-cor::WeightTensor cor::generate_weight_tensor(arma::mat const & source_pts, arma::mat const & target_pts,
-  double const & eps, double const & pw_thresh) noexcept {
+cor::WeightTensor cor::generate_weight_tensor(arma::mat const & source_pts,
+      arma::mat const & target_pts, double const & eps, double const & pw_thresh) noexcept {
   WeightTensor weight = {};
   size_t const & m = source_pts.n_cols;
   size_t const & n = target_pts.n_cols;

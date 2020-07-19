@@ -17,5 +17,6 @@ namespace nmsac {
  * @return
  */
 bool main(arma::mat src_pts, arma::mat tgt_pts, ConfigNMSAC const & config,
-        arma::mat33 & optimal_rot, arma::vec3 & optimal_trans, size_t & max_inliers, size_t & iter) noexcept;
+        arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
+        size_t & max_inliers, size_t & iter) noexcept;
 };  // namespace nmsac
