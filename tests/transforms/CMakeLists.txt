@@ -25,7 +25,7 @@ target_link_libraries(svd_test
     PRIVATE
     ${ARMADILLO_LIBRARIES}
     nlohmann_json::nlohmann_json
-    transforms::svd
+    transforms
     gtest_main
 
     PUBLIC
@@ -57,8 +57,7 @@ target_link_libraries(icp_test
     PRIVATE
     ${ARMADILLO_LIBRARIES}
     nlohmann_json::nlohmann_json
-    transforms::svd
-    transforms::icp
+    transforms
     gtest_main
 
     PUBLIC
