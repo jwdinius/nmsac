@@ -20,40 +20,39 @@ using json = nlohmann::json;
 //! The fixture for testing class qap.
 class QAPTest : public ::testing::Test {
  protected:
-  /**
-   * constants for test
-   */
-  // You can remove any or all of the following functions if their bodies would
-  // be empty.
+   /**
+    * constants for test
+    */
+   // You can remove any or all of the following functions if their bodies would
+   // be empty.
 
-  QAPTest() : data_path_(DATA_PATH) {
+   QAPTest() : data_path_(DATA_PATH) {
      // You can do set-up work for each test here.
-  }
+   }
 
-  ~QAPTest() override {
+   ~QAPTest() override {
      // You can do clean-up work that doesn't throw exceptions here.
-  }
+   }
 
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
+   // If the constructor and destructor are not enough for setting up
+   // and cleaning up each test, you can define the following methods:
 
-  void SetUp() override {
+   void SetUp() override {
      // Code here will be called immediately after the constructor (right
      // before each test).
-  }
+   }
 
-  void TearDown() override {
+   void TearDown() override {
      // Code here will be called immediately after each test (right
      // before the destructor).
-  }
+   }
 
-  // Class members declared here can be used by all tests in the test suite
-  // for Foo.
-  const std::string data_path_;
+   // Class members declared here can be used by all tests in the test suite
+   // for Foo.
+   const std::string data_path_;
 };
 
-TEST_F(QAPTest, FullSourceMatching)
-{
+TEST_F(QAPTest, FullSourceMatching) {
   //! load unit test data from json
   //! NOTE: this test data was generated without adding noise
   std::ifstream ifs(data_path_ + "/registration-data.json");
@@ -107,18 +106,21 @@ TEST_F(QAPTest, FullSourceMatching)
   }
 
   cor::correspondences_t corrs;
-  std::unique_ptr<cor::CorrespondencesBase> qap = std::make_unique<cor::QAP>(src_pts, tgt_pts, config);
+  std::unique_ptr<cor::CorrespondencesBase> qap = std::make_unique<cor::QAP>(
+      src_pts, tgt_pts, config);
   ASSERT_TRUE( qap->calc_correspondences(corrs) == cor::status_e::success );
 
-  //! checking that key is present in both correspondence sets is enough; see `find_correspondences` implementation
+  /**
+   * checking that key is present in both correspondence sets is enough;
+   * @see find_correspondences
+   */
   for (auto const & c : _corrs) {
     auto key = c.first;
     ASSERT_TRUE(corrs.find(key) != corrs.end());
   }
 }
 
-TEST_F(QAPTest, PartialSourceMatching)
-{
+TEST_F(QAPTest, PartialSourceMatching) {
   //! load unit test data from json
   //! NOTE: this test data was generated without adding noise
   std::ifstream ifs(data_path_ + "/registration-data-mincorr.json");
@@ -172,10 +174,14 @@ TEST_F(QAPTest, PartialSourceMatching)
   }
 
   cor::correspondences_t corrs;
-  std::unique_ptr<cor::CorrespondencesBase> qap = std::make_unique<cor::QAP>(src_pts, tgt_pts, config);
+  std::unique_ptr<cor::CorrespondencesBase> qap = std::make_unique<cor::QAP>(src_pts,
+      tgt_pts, config);
   ASSERT_TRUE( qap->calc_correspondences(corrs) == cor::status_e::success );
 
-  //! checking that key is present in both correspondence sets is enough; see `find_correspondences` implementation
+  /**
+   * checking that key is present in both correspondence sets is enough;
+   * @see find_correspondences
+   */
   for (auto const & c : _corrs) {
     auto key = c.first;
     ASSERT_TRUE(corrs.find(key) != corrs.end());

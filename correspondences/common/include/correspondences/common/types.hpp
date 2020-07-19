@@ -1,5 +1,6 @@
 #pragma once
 //! c/c++ headers
+#include <functional>
 #include <map>
 #include <memory>
 #include <tuple>
@@ -13,9 +14,12 @@ namespace correspondences {
 
 /** @enum status_e
  * @brief return status for call to calc_correspondences
+ *
+ * @todo add more fields for better status resolution
  */
 enum class status_e {
-  failure, success  // todo add more fields
+  failure,
+  success
 };
 
 /** @typedef WeightKey_t
@@ -73,7 +77,8 @@ using WeightTensor = std::unordered_map<WeightKey_t, double, key_hash, key_equal
 /** @struct correspondences::key_lthan
  * @brief less than comparator for correspondence map
  */
-struct key_lthan : public std::binary_function<std::pair<size_t, size_t>, std::pair<size_t, size_t>, bool> {
+struct key_lthan :
+  public std::binary_function<std::pair<size_t, size_t>, std::pair<size_t, size_t>, bool> {
   /** key_lthan::operator()
    * @brief operator overload for ()
    *
@@ -81,10 +86,11 @@ struct key_lthan : public std::binary_function<std::pair<size_t, size_t>, std::p
    * @param[in] right right-hand key for "<" comparison
    * @return left < right
    *
-   * @note assumes row-major ordering:  if two keys have the same row index, column index is used for comparison, otherwise
-   * row index is used for comparison
+   * @note assumes row-major ordering:  if two keys have the same row index, column index is used
+   * for comparison, otherwise row index is used for comparison
    */
-  bool operator()(const std::pair<size_t, size_t> & left, const std::pair<size_t, size_t> & right) const {
+  bool operator()(const std::pair<size_t, size_t> & left,
+      const std::pair<size_t, size_t> & right) const {
     if (left.first == right.first) {
       return left.second < right.second;
     } else {

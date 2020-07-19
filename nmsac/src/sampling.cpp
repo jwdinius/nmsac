@@ -14,15 +14,17 @@
  * @param [in] num_samples number of columns to sample from
  * @return matrix with sampled columns
  */
-arma::mat const nmsac::sample_cols(arma::mat & remaining_cols, size_t const & num_samples) noexcept {
-    //! reorder indices
-    arma::uvec const ordering = arma::randperm(remaining_cols.n_cols);
-    //! reorder remaining_cols by shuffled order
-    arma::mat reord = remaining_cols.cols( ordering );
-    //! sample num_samples columns from shuffled columns
-    arma::mat output = reord.cols( arma::span(0, num_samples-1) );
-    //! remove sampled columns from remaining_cols
-    remaining_cols = remaining_cols.cols( ordering(arma::span(num_samples, remaining_cols.n_cols-1)) );
-    //! return sampled columns
-    return output;
+arma::mat const nmsac::sample_cols(arma::mat & remaining_cols,
+    size_t const & num_samples) noexcept {
+  //! reorder indices
+  arma::uvec const ordering = arma::randperm(remaining_cols.n_cols);
+  //! reorder remaining_cols by shuffled order
+  arma::mat reord = remaining_cols.cols( ordering );
+  //! sample num_samples columns from shuffled columns
+  arma::mat output = reord.cols( arma::span(0, num_samples-1) );
+  //! remove sampled columns from remaining_cols
+  remaining_cols = remaining_cols.cols(
+      ordering(arma::span(num_samples, remaining_cols.n_cols-1)) );
+  //! return sampled columns
+  return output;
 }
