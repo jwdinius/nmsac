@@ -46,7 +46,7 @@ void cq::ConstrainedObjective::operator()(cq::ConstrainedObjective::ADvector &fg
           if (i != k && j != l) {
             WeightKey_t const key = std::make_tuple(i, j, k, l);
             if (weights_.find(key) != weights_.end()) {
-              fgrad[curr_idx] += static_cast<CppAD::AD<double>>(weights_[key]) * z[i*(n_+1) + j] * z[k*(n_+1) + l];
+              fgrad[curr_idx] += weights_[key] * z[i*(n_+1) + j] * z[k*(n_+1) + l];
             }
           }
         }
@@ -167,7 +167,6 @@ cor::QAP::ipopt_status_t cor::QAP::calc_optimum() noexcept {
     constraints_ub[ctr++] = 1;
   }
 
-  //constraints_lb[ctr] = n - m;
   constraints_lb[ctr] = n - k;
   constraints_ub[ctr++] = n - k;
   for (size_t j = 0; j < n; ++j) {
@@ -234,7 +233,7 @@ cor::status_e cor::QAP::calc_correspondences(cor::correspondences_t & correspond
     return status_e::failure;
   }
 
-  correspondences.clear();  
+  correspondences.clear();
   auto const & m = ptr_obj_->num_source_pts();
   auto const & n = ptr_obj_->num_target_pts();
 

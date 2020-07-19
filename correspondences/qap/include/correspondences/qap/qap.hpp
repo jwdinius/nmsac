@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <utility>
 //! dependency headers
-#include <armadillo>  // NOLINT [build/include_order]
+#include <armadillo>
 #include <boost/functional/hash.hpp>
 #include <cppad/cppad.hpp>
 #include <cppad/ipopt/solve.hpp>
@@ -72,7 +72,8 @@ class ConstrainedObjective {
        arma::mat const & target_pts, Config const & config) :
      m_(static_cast<size_t>(source_pts.n_cols)), n_(static_cast<size_t>(target_pts.n_cols)),
      min_corr_(config.min_corr) {
-     weights_ = generate_weight_tensor(source_pts, target_pts, config.epsilon, config.pairwise_dist_threshold);
+     weights_ = generate_weight_tensor(source_pts, target_pts, config.epsilon,
+         config.pairwise_dist_threshold);
      n_constraints_ = m_ + n_ + 2;
    }
 
@@ -202,7 +203,7 @@ class QAP : public CorrespondencesBase {
     * @return solution status 
     * @see status_e definition in types.hpp
     */
-   status_e calc_correspondences(correspondences_t & corr) noexcept override final;
+   status_e calc_correspondences(correspondences_t & corr) noexcept final;
 
    /** QAP::get_optimum()
     * @brief get optimization
