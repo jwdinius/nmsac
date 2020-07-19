@@ -26,9 +26,10 @@ bool transforms::best_fit_transform(arma::mat const & src_pts, arma::mat const &
     arma::mat target_pts_align(arma::size(dst_pts));
 
     if (corrs.size() > 0) {
-       source_pts_align.set_size(corrs.size(), src_pts.n_cols);
-       target_pts_align.set_size(corrs.size(), dst_pts.n_cols);
-       arma::uvec src_inds(corrs.size()), tgt_inds(corrs.size());
+       source_pts_align.set_size(src_pts.n_rows, corrs.size());
+       target_pts_align.set_size(dst_pts.n_rows, corrs.size());
+       arma::uvec src_inds(corrs.size());
+       arma::uvec tgt_inds(corrs.size());
        for (auto [i, c] : enumerate(corrs)) {
           auto const p = c.first; 
           src_inds(i) = p.first;
@@ -52,7 +53,7 @@ bool transforms::best_fit_transform(arma::mat const & src_pts, arma::mat const &
     //! compute weighted centroids
     arma::vec3 const src_centroid = arma::vec3(arma::mean(source_pts_align, 1));
     arma::vec3 const dst_centroid = arma::vec3(arma::mean(target_pts_align, 1));
-
+    
     //! translate centroid to origin
     //! - Note the use of the decrement operator: this is why the function signature uses pass by value, not ref
     arma::mat const src_crep = arma::repmat(src_centroid, 1, n_pts);
