@@ -1,4 +1,4 @@
-FROM jdinius/qap-dependencies
+FROM jdinius/qap-dependencies:0.2.0
 MAINTAINER Joe Dinius
 
 ARG username=nmsac
@@ -19,6 +19,20 @@ RUN apt-get update && apt-get install -y libprotobuf-dev \
     && pip3 install conan \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# INSTALL PYBIND11 (downloaded from github)
+RUN wget https://github.com/pybind/pybind11/archive/v2.5.0.zip \
+    && unzip v2.5.0.zip
+RUN cd pybind* && mkdir build && cd build \
+    && cmake .. \
+    && make -j2 && make install
+
+# INSTALL carma (from my personal fork)
+RUN wget https://github.com/jwdinius/carma/archive/master.zip \
+    && unzip master.zip
+RUN cd carma* && mkdir build && cd build \
+    && cmake .. \
+    && make && make install
 
 # cppcheck
 RUN cd /usr/local/src \

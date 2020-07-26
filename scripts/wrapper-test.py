@@ -3,7 +3,7 @@ import argparse
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import json 
-from pynmsac import PyConfigNMSAC, PythonNMSAC
+import pyNMSAC as nmsac
 
 class Store_as_array(argparse._StoreAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -107,8 +107,8 @@ if __name__ == "__main__":
         plt.show()
 
     if args.nmsac:
-        pc = PyConfigNMSAC()
-        # XXX Record these values as default (except printStatus)
+        pc = nmsac.Config()
+        ''' Update the values below, if you wish
         pc.randomSeed = 11011
         pc.printStatus = True
         pc.ps = 0.99
@@ -121,25 +121,28 @@ if __name__ == "__main__":
         pc.pairDistThresh = 0.01
         pc.maxIterIcp = 100
         pc.tolIcp = 1e-8
-        pc.outlierRejIcp = 0.2
-        pc.pairwiseDistThreshold = 0.1
+        pc.outlierRejRatioIcp = 0.2
+        '''
 
         source_pts = points.T
         source_pts = np.vstack((source_pts, np.ones((1, source_pts.shape[1]))))
         target_pts = pointsAfter.T
         target_pts = np.vstack((target_pts, np.ones((1, target_pts.shape[1]))))
 
-        pr = PythonNMSAC(source_pts[:3, :].tolist(), target_pts[:3, :].tolist(), pc)
-
+        ### the 2 lines below are VERY important, don't remove ###
+        source = np.copy(source_pts[:3, :])
+        target = np.copy(target_pts[:3, :])
+        ##########################################################
+        # make the call
+        status, Rn, tn, numInliers, numIterations, callTime = nmsac.execute(source, target, pc)
+        if not status: 
+            print("NMSAC call failed")
         # grab output
         H_out = np.zeros((4, 4))
-        H_out[:3, :3] = np.array(pr.R)
-        H_out[:3, 3] = np.array(pr.t)
+        H_out[:3, :3] = np.array(Rn)
+        H_out[:3, 3] = np.array(tn.reshape((3,)))
         H_out[3, 3] = 1.0
-        numInliers = pr.numInliers
-        numIterations = pr.numIters
-        callTime = pr.hiResCallTime
-        print "NMSAC took {}sec".format(callTime)
+        print("NMSAC took {}msec".format(callTime))
         source_pts_xform = np.dot(H_out, source_pts)
 
         fig = plt.figure()

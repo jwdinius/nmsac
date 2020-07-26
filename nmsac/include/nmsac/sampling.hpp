@@ -18,4 +18,4 @@ namespace nmsac {
  * @return matrix with sampled columns
  */
 arma::mat const sample_cols(arma::mat & remaining_cols, size_t const & num_samples) noexcept;
-};  // namespace nmsac
+}  // namespace nmsac

@@ -4,7 +4,7 @@ find_package(MLPACK REQUIRED)
 
 set(target icp)
 
-add_library(${target}
+add_library(${target} SHARED
   src/icp.cpp
 )
 
@@ -25,11 +25,11 @@ target_include_directories(${target}
 
 target_link_libraries(${target}
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
     ${MLPACK_LIBRARIES}
     ${PROJECT_NAME}::svd
 
     PUBLIC
+    ${ARMADILLO_LIBRARIES}
     OpenMP::OpenMP_CXX
 
     INTERFACE

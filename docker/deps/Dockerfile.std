@@ -64,13 +64,6 @@ RUN cd json* && mkdir build && cd build \
     && cmake .. \
     && make -j2 && make install
 
-# INSTALL PYBIND11 (downloaded from github)
-RUN wget https://github.com/pybind/pybind11/archive/v2.5.0.zip \
-    && unzip v2.5.0.zip
-RUN cd pybind* && mkdir build && cd build \
-    && cmake .. \
-    && make -j2 && make install
-
 # INSTALL OR-TOOLS (from binary)
 RUN apt-get install -y zlib1g-dev
 RUN wget https://github.com/google/or-tools/releases/download/v7.4/or-tools_ubuntu-18.04_v7.4.7247.tar.gz \

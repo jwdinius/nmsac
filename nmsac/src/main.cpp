@@ -51,7 +51,6 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
   max_inliers = 0;
 
   //! for repeatable sampling
-  std::cout << config.random_seed << std::endl;
   arma::arma_rng::set_seed(config.random_seed);
 
   //! setup KDTreeSearcher for finding nearest-neighbor points between

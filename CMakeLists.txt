@@ -10,6 +10,7 @@ add_compile_options(-Wall -O3 -Wno-deprecated-declarations)
 add_subdirectory(correspondences)
 add_subdirectory(transforms)
 add_subdirectory(nmsac)
+add_subdirectory(bindings)
 
 if (BUILD_TESTS)
   enable_testing()
