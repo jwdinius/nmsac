@@ -19,6 +19,6 @@ namespace nmsac {
  * @return true if all algorithm stages were successful, false otherwise
  */
 bool registration(arma::mat const & src_sub, arma::mat const & tgt_sub, ConfigNMSAC const & config,
-        arma::mat33 & optimal_rot, arma::vec3 & optimal_trans, arma::uvec & src_corr_ids,
-        arma::uvec & tgt_corr_ids) noexcept;
-};  // namespace nmsac
+    arma::mat33 & optimal_rot, arma::vec3 & optimal_trans, arma::uvec & src_corr_ids,
+    arma::uvec & tgt_corr_ids) noexcept;
+}  // namespace nmsac

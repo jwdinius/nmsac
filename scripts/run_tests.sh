@@ -1,5 +1,9 @@
-mkdir build \
+rm -rf build \
+    && mkdir build \
     && cd build \
     && cmake .. \
     && make -j2 \
-    && make test
+    && export PYTHONPATH=$(pwd)/bindings/python \
+    && ctest \
+    && cd .. \
+    && python3 ./scripts/wrapper-test.py -s

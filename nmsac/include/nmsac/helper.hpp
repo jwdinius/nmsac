@@ -21,4 +21,4 @@ size_t count_correspondences(arma::mat const & src, transforms::KDTreeSearcher &
 
 void to_homog(arma::mat33 const & R, arma::vec3 const & t, arma::mat44 & H) noexcept;
 void from_homog(arma::mat33 & R, arma::vec3 & t, arma::mat44 const & H) noexcept;
-};  // end namespace nmsac
+}  // end namespace nmsac

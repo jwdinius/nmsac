@@ -17,14 +17,12 @@ target_include_directories(main_test
     ${TEST_DATA_INCLUDE}
 
     PUBLIC
-    ${ARMADILLO_INCLUDE_DIRS}
 
     INTERFACE
 )
 
 target_link_libraries(main_test
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
     nlohmann_json::nlohmann_json
     gtest_main
 
@@ -56,8 +54,6 @@ target_include_directories(helper_test
 
 target_link_libraries(helper_test
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
-    nlohmann_json::nlohmann_json
     gtest_main
 
     PUBLIC
@@ -89,8 +85,6 @@ target_include_directories(sampling_test
 
 target_link_libraries(sampling_test
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
-    nlohmann_json::nlohmann_json
     gtest_main
 
     PUBLIC

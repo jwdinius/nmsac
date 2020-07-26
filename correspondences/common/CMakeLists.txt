@@ -7,7 +7,7 @@ find_package(ortools REQUIRED)
 
 set(target common)
 
-add_library(${target}
+add_library(${target} SHARED
   src/utilities.cpp
 )
 
@@ -42,7 +42,6 @@ target_compile_options(${target}
     -DUSE_GLOP
 
     PUBLIC
-    ${METAPROJ_COMPILE_FLAGS}
 
     INTERFACE
 )
