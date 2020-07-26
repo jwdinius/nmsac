@@ -3,7 +3,7 @@ find_package(Armadillo REQUIRED)
 
 set(target svd)
 
-add_library(${target}
+add_library(${target} SHARED
   src/svd.cpp
 )
 
@@ -23,10 +23,10 @@ target_include_directories(${target}
 
 target_link_libraries(${target}
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
     transforms::common
 
     PUBLIC
+    ${ARMADILLO_LIBRARIES}
     correspondences::common
 
     INTERFACE

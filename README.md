@@ -23,36 +23,38 @@ The recommended approach is to use [`docker`](https://docs.docker.com/install/li
 
 ### With `docker` (recommended)
 #### Build images
-You will first need to build the `nmsac-deps` container.  To do this, execute the following
+You will first need to build the `qap-dependencies{-nvidia}` container.  To do this, execute the following
 
 ```shell
 $ cd {repo-root-dir}/docker/deps
 $ #ln -s Dockerfile.std Dockerfile  ## NOTE: do this if you do not have nvidia-docker2 installed
-$ ln -s Dockerfile.nvidia Dockerfile ## NOTE: do this if you do have nvidia-docker2 installed AND you want to use the nvidia runtime
-$ ./build-docker.sh  ## this will take awhile to build
+$ ln -s Dockerfile.nvidia Dockerfile  ## NOTE: do this if you do have nvidia-docker2 installed AND you want to use the nvidia runtime
+$ ./build-docker.sh {--no-cache}  ## this will take awhile to build if you pass the `--no-cache` argument
 ```
 
-Now that you have `nmsac-deps` built locally, you can build the `nmsac` image.  This image is incremental, and basically just sets up a user environment for working with this repo.  To build the `nmsac` image, execute the following:
+Now that you have `qap-dependencies{-nvidia}` built locally, you can build the `nmsac{-nvidia}` image.  This image is incremental, and basically just sets up a user environment for working with this repo.  To build the `nmsac` image, execute the following:
 
 ```shell
 cd {repo-root-dir}/docker
-$ ./build-docker.sh
+$ ./build-docker.sh {--no-cache}  ## this will take awhile to build if you pass the `--no-cache` argument
 ```
 
 #### Launch development container
 
 ```shell
 cd {repo-root-dir}
-$ ./docker/run-docker.sh {--runtime=nvidia}  ## only add the optional command line arg if you have the nvidia runtime available
+$ ./docker/run-docker.sh {--runtime=nvidia}  ## only add the optional command line arg if you have the nvidia runtime available AND are using the nmsac-nvidia image
 ```
 
 You should now have an interactive shell to work from.
 
 #### Build the library
 
+*tl;dr:  `cd` to the repo's root directory, then execute `./scripts/run_tests.sh` to run all steps mentioned below*
+
 ```shell
 $ cd {repo-root-dir}
-$ rm -rf build && mkdir build && cd build && cmake .. && make
+$ rm -rf build && mkdir build && cd build && cmake .. && make -j2
 ```
 #### Test
 
@@ -60,16 +62,15 @@ To run the unit tests:
 
 ```shell
 $ cd {repo-root-dir}/build  ## after following build steps above
-$ make test
+$ ctest
 ```
 
-To see graphical output (from python 2.7):
+To see graphical output (from python3):
 
 ```shell
 $ cd {repo-root-dir}/build  ## after following build steps above
 $ export PYTHONPATH=$(pwd):$PYTHONPATH
-$ cd ../scripts
-$ python wrapper-test.py -s
+$ python3 ./scripts/wrapper-test.py -s
 ```
 
 The command above sets up two cubes; one that is a translated and rotated copy of the second.  This example is provided as a simple proof-of-concept.  The user can load KITTI `*.bin` point cloud data and process it using the same `wrapper-test.py` script.  Check the options in the beginning of that script for more details.

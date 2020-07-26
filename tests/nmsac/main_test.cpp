@@ -107,7 +107,7 @@ TEST_F(MainTest, CubeTest) {
     }
 
     //! make the call
-    auto const config = nmsac::ConfigNMSAC();
+    auto config = nmsac::ConfigNMSAC();
     arma::mat33 R_opt;
     arma::vec3 t_opt;
     size_t num_inliers, its;

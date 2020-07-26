@@ -1,17 +1,11 @@
-find_package(OpenMP)
 find_package(Armadillo REQUIRED)
-find_package(MLPACK REQUIRED)
-find_package(nlohmann_json 3.7.0 REQUIRED)
 find_package(pybind11 REQUIRED)
 find_package(carma REQUIRED)
 
-set(target nmsac)
+set(target pyNMSAC)
 
-add_library(${target} SHARED
-  src/helper.cpp
-  src/registration.cpp
-  src/sampling.cpp
-  src/main.cpp
+add_library(${target} MODULE
+  src/bind_nmsac.cpp
 )
 
 # Create namespaced alias
@@ -23,25 +17,18 @@ target_include_directories(${target}
 
     PUBLIC
     ${ARMADILLO_INCLUDE_DIRS}
-    ${MLPACK_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 
 # TODO(jwd) - add generator expression for includes below
 target_link_libraries(${target}
     PRIVATE
-    correspondences::qap
-    transforms
+    pybind11::module
 
     PUBLIC
     ${ARMADILLO_LIBRARIES}
-    ${MLPACK_LIBRARIES}
-    correspondences::common
-    nlohmann_json::nlohmann_json
-    OpenMP::OpenMP_CXX
+    nmsac::nmsac
 
     INTERFACE
 )
@@ -58,3 +45,8 @@ target_compile_features(${target}
     PUBLIC
         cxx_std_17
 )
+
+set_target_properties(${target}
+    PROPERTIES
+    PREFIX ""
+    )

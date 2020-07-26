@@ -10,7 +10,7 @@ find_package(IPOPT REQUIRED)
 
 set(target qap)
 
-add_library(${target}
+add_library(${target} SHARED
   src/qap.cpp
 )
 
@@ -33,12 +33,12 @@ target_include_directories(${target}
 
 target_link_libraries(${target}
     PRIVATE
-    ${ARMADILLO_LIBRARIES}
     #${MLPACK_LIBRARIES}
     ${CPPAD_LIBRARIES}
     ${IPOPT_LIBRARIES} 
 
     PUBLIC
+    ${ARMADILLO_LIBRARIES}
     correspondences::common
     nlohmann_json::nlohmann_json
 
