@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
 project(bindings)
 
-add_subdirectory(python)
+if (BUILD_PYTHON_BINDINGS)
+  add_subdirectory(python)
+endif()
 
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_link_libraries(${PROJECT_NAME}
   INTERFACE
-    ${PROJECT_NAME}::python
+  $<$<BUILD_PYTHON_BINDINGS:ON>:${PROJECT_NAME}::python>
 )
