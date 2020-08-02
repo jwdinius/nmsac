@@ -1,0 +1,52 @@
+version: 2.1
+jobs:
+  lint:
+    docker:
+      - image: jdinius/nmsac:0.2.0
+    
+    steps:
+      - checkout
+
+      - run:
+          name: Lint bindings source
+          command: './scripts/linter.sh bindings'
+
+      - run:
+          name: Lint correspondences source
+          command: './scripts/linter.sh correspondences'
+
+      - run:
+          name: Lint nmsac source
+          command: './scripts/linter.sh nmsac'
+      
+      - run:
+          name: Lint transforms source
+          command: './scripts/linter.sh transforms'
+      
+      - run:
+          name: Lint tests source
+          command: './scripts/linter.sh tests'
+
+  build_standard:
+    docker:
+      - image: jdinius/nmsac:0.2.0
+
+    steps:
+      - checkout
+
+      - run:
+          name: Run CMake
+          command: 'mkdir build ; cd build ; cmake ..'
+      - run:
+          name: Compile
+          command: 'cmake --build build'
+      - run:
+          name: Execute test suite
+          command: 'cd build ; ctest --output-on-failure -j 2'
+
+workflows:
+  version: 2.1
+  build_and_test_all:
+    jobs:
+      - lint
+      - build_standard
