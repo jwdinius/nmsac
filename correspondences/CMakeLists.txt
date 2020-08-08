@@ -8,9 +8,8 @@ if (BUILD_QAP)
 endif()
 
 add_library(${PROJECT_NAME} INTERFACE)
-
 target_link_libraries(${PROJECT_NAME}
   INTERFACE
     ${PROJECT_NAME}::common
-    $<$<BUILD_QAP:ON>:${PROJECT_NAME}::qap>
+    $<$<BOOL:BUILD_QAP>:${PROJECT_NAME}::qap>
 )

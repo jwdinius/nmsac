@@ -1,9 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 project(tests)
 
+# set test parameters
 set(DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
 set(FLOAT_TOL 1e-7)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/TestData.h.in TestData.h @ONLY)
+
+# write parameters to file (can add new lines below because <glue>=newline is already included)
+set(newline "\r\n")
+string(JOIN newline file_content
+  "inline constexpr char DATA_PATH[] = \"${DATA_PATH}\";"
+  "inline constexpr double FLOAT_TOL = ${FLOAT_TOL};"
+  )
+file(GENERATE
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/TestData.h"
+  CONTENT "inline constexpr char DATA_PATH[] = \"${DATA_PATH}\";\r\ninline constexpr double FLOAT_TOL = ${FLOAT_TOL};"
+  )
 set(TEST_DATA_INCLUDE ${CMAKE_CURRENT_BINARY_DIR})
 
 # Download and unpack googletest at configure time

@@ -30,7 +30,7 @@ target_link_libraries(${target}
 
     PUBLIC
     ${ARMADILLO_LIBRARIES}
-    OpenMP::OpenMP_CXX
+    $<$<BOOL:OpenMP_FOUND>:OpenMP::OpenMP_CXX>
 
     INTERFACE
 )
