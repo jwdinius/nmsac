@@ -24,24 +24,23 @@ target_include_directories(${target}
     PUBLIC
     ${ARMADILLO_INCLUDE_DIRS}
     ${MLPACK_INCLUDE_DIRS}
+    ${SYS_INCLUDE_PATH}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 )
 
-# TODO(jwd) - add generator expression for includes below
 target_link_libraries(${target}
     PRIVATE
-    correspondences::qap
     transforms
 
     PUBLIC
     ${ARMADILLO_LIBRARIES}
     ${MLPACK_LIBRARIES}
-    correspondences::common
+    correspondences
     nlohmann_json::nlohmann_json
-    OpenMP::OpenMP_CXX
+    $<$<BOOL:OpenMP_FOUND>:OpenMP::OpenMP_CXX>
 
     INTERFACE
 )

@@ -7,8 +7,9 @@
 #include "transforms/common/utilities.hpp"
 #include "transforms/svd/svd.hpp"
 #include "correspondences/common/base.hpp"
-#include "correspondences/qap/qap.hpp"  // TODO(jwd): need to figure out a way to add this at compile time via cmake switch
+#include "correspondences/qap/qap.hpp"
 //! project headers
+#include "SysSetup.h"  // to define which algorithms to build and link (created by CMake)
 #include "nmsac/helper.hpp"
 #include "nmsac/registration.hpp"
 
@@ -43,32 +44,40 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
   }
 
   /**
-   * @todo need a better abstraction for sharing config data
-   */
-  cor::qap::Config reg_config;
-  reg_config.epsilon = config.epsilon;
-  reg_config.pairwise_dist_threshold = config.pair_dist_thresh;
-  reg_config.n_pair_threshold = config.n_pair_thresh;
-
-  /**
    * core computation is done by external lib function call;
-   * see Register package usage in CMakeLists.txt
    */
   cor::correspondences_t corrs;
-  std::unique_ptr<cor::CorrespondencesBase> corr_object = std::make_unique<cor::QAP>(
-      src_sub, tgt_sub, reg_config);
+  std::unique_ptr<cor::CorrespondencesBase> corr_object;
+
+  if constexpr (BUILD_QAP) {
+    /**
+     * setup QAP - optimization of quadratic assignment problem
+     */
+    cor::qap::Config reg_config;
+    reg_config.epsilon = config.epsilon;
+    reg_config.pairwise_dist_threshold = config.pair_dist_thresh;
+    reg_config.n_pair_threshold = config.n_pair_thresh;
+    corr_object = std::make_unique<cor::QAP>(src_sub, tgt_sub, reg_config);
+  }
 
   /**
-   * @todo check for status and exit on failure
+   * calculate correspondences
    */
-  auto const corr_status = corr_object->calc_correspondences(corrs);
-
+  if (corr_object->calc_correspondences(corrs) != cor::status_e::success) {
+    std::cout << static_cast<std::string>(__func__) <<
+      ": Correspondence solver failed" << std::endl;
+    return false;
+  }
 
   /**
-   * @todo check for status and exit on failure
+   * calculate best homography from correspondences
    */
   arma::mat44 H_opt;
-  auto const xfrm_status = xfrm::best_fit_transform(src_sub, tgt_sub, corrs, H_opt);
+  if (!xfrm::best_fit_transform(src_sub, tgt_sub, corrs, H_opt)) {
+    std::cout << static_cast<std::string>(__func__) <<
+      ": Homography from correspondences failed" << std::endl;
+    return false;
+  }
 
   auto const & m = corrs.size();  //! == config.k
   src_corr_ids.resize(m);

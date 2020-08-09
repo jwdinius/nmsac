@@ -1,4 +1,3 @@
-find_package(OpenMP)
 find_package(Armadillo REQUIRED)
 
 set(target svd)

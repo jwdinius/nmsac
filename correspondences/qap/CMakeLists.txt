@@ -1,8 +1,6 @@
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(OpenMP)
 find_package(Armadillo REQUIRED)
-#find_package(MLPACK REQUIRED)
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 find_package(nlohmann_json 3.7.0 REQUIRED)
 find_package(CppAD REQUIRED)
@@ -19,7 +17,6 @@ add_library(${PROJECT_NAME}::${target} ALIAS ${target})
 
 target_include_directories(${target}
     PRIVATE
-    #${MLPACK_INCLUDE_DIRS}
     ${CPPAD_INCLUDE_DIRS}
     ${IPOPT_INCLUDE_DIRS}
 
@@ -33,7 +30,6 @@ target_include_directories(${target}
 
 target_link_libraries(${target}
     PRIVATE
-    #${MLPACK_LIBRARIES}
     ${CPPAD_LIBRARIES}
     ${IPOPT_LIBRARIES} 
 

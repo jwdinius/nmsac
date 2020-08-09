@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", '--trans', action=Store_as_array, help="translation offset, xyz", type=float, nargs=3)
     parser.add_argument("-p", "--checkplot", action="store_true",  help="Create plot to check transforms")
     parser.add_argument("-s", "--nmsac", action="store_true",  help="run nmsac algorithm")
-    parser.add_argument("-o", "--output", help="Output filename (to hold the json)", default="output.json")
+    parser.add_argument("-o", "--output", help="Output filename (to hold the json)")
     args = parser.parse_args()
     
     if args.input:
