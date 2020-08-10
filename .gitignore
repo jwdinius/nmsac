@@ -1,3 +1,4 @@
 build
 docker/deps/Dockerfile
 output.json
+coverage.info

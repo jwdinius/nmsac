@@ -1,8 +1,10 @@
 version: 2.1
+orbs:
+  coveralls: coveralls/coveralls@1.0.6
 jobs:
   lint:
     docker:
-      - image: jdinius/nmsac:0.2.0
+      - image: jdinius/nmsac:0.3.0
     
     steps:
       - checkout
@@ -29,20 +31,45 @@ jobs:
 
   build_standard:
     docker:
-      - image: jdinius/nmsac:0.2.0
+      - image: jdinius/nmsac:0.3.0
 
     steps:
       - checkout
 
       - run:
           name: Run CMake
-          command: 'mkdir build ; cd build ; cmake ..'
+          command: 'mkdir build ; cd build ; cmake .. -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=OFF'
       - run:
           name: Compile
           command: 'cmake --build build'
       - run:
           name: Execute test suite
           command: 'cd build ; ctest --output-on-failure -j 2'
+  
+  code_coverage:
+    docker:
+      - image: jdinius/nmsac:0.3.0
+
+    steps:
+      - checkout
+      - run: 'sudo apt-get update && sudo apt-get install -y nodejs npm'
+      - run:
+          name: Run CMake (with gcov output)
+          command: 'mkdir build ; cd build ; cmake .. -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=ON'
+      - run:
+          name: Compile
+          command: 'cmake --build build'
+      - run:
+          name: Execute test suite (NOTE there is an intermittent issue with Armadillo (or MLPACK) with transforms_test::icp_test when optimizations are off and debug symbols are enabled)
+          command: 'cd build ; ctest --output-on-failure -j 2 || true'
+      - run:
+          name: Generate lcov coverage report
+          command: 'lcov --capture --directory ./build --output-file coverage.info'
+      - run:
+          name: Exclude dependencies from coverage report
+          command: 'lcov --remove coverage.info "/usr/*" "/or-tools*" "$(pwd)/tests/*" "$(pwd)/build/*" --output-file coverage.info &> /dev/null'
+      - coveralls/upload:
+          path_to_lcov: coverage.info
 
 workflows:
   version: 2.1
@@ -50,3 +77,4 @@ workflows:
     jobs:
       - lint
       - build_standard
+      - code_coverage
