@@ -4,7 +4,7 @@ MAINTAINER Joe Dinius
 ARG username=nmsac
 ENV USER=$username
 
-# setup ldconfig to allow linking to libregistration built below
+# XXX(jwd) - not sure this is needed anymore; consider removal)
 RUN echo "/or-tools_Ubuntu-18.04-64bit_v7.4.7247/lib" >> /etc/ld.so.conf.d/x86_64-linux-gnu.conf \
     && ldconfig
 
@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y libprotobuf-dev \
     ninja-build \
     python3 \ 
     python3-pip \
+    lcov \
+    valgrind \
     && pip3 install conan \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

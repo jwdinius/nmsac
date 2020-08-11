@@ -13,8 +13,13 @@ file(GENERATE
   )
 set(SYS_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-# set project-wide compile options
-add_compile_options(-Wall -O3 -Wno-deprecated-declarations)
+if (CODE_COVERAGE)
+  add_compile_options(-Wall -O0 -g -Wno-deprecated-declarations --coverage)
+  add_link_options(--coverage)
+else()
+  # set project-wide compile options
+  add_compile_options(-Wall -O3 -Wno-deprecated-declarations)
+endif()
 
 add_subdirectory(correspondences)
 add_subdirectory(transforms)
@@ -28,4 +33,7 @@ endif()
 if (BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+  if (CODE_COVERAGE)
+
+  endif()
 endif()
