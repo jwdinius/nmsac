@@ -1,4 +1,4 @@
-FROM jdinius/qap-dependencies:0.2.0
+FROM jdinius/qap-dependencies-nvidia:0.3.0
 MAINTAINER Joe Dinius
 
 ARG username=nmsac

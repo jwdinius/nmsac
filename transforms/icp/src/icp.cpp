@@ -20,7 +20,8 @@
 bool transforms::iterative_closest_point(arma::mat const & src_pts, arma::mat const & dst_pts,
     arma::mat44 & H_init, size_t const & max_its, double const & tolerance,
     double const & reject_ratio, arma::mat44 & H_optimal) noexcept {
-    //! input checking
+  // LCOV_EXCL_START
+  //! input checking
   if (src_pts.n_rows != 3) {
     std::cout << static_cast<std::string>(__func__) <<
       ": First argument must be a matrix with 3 rows" << std::endl;
@@ -39,6 +40,7 @@ bool transforms::iterative_closest_point(arma::mat const & src_pts, arma::mat co
       ": Sixth argument must be a scalar inside the interval (0, 1)" << std::endl;
     return false;
   }
+  // LCOV_EXCL_STOP
 
   //! transform src points by initial homogeneous transformation
   size_t const & src_npts = src_pts.n_cols;

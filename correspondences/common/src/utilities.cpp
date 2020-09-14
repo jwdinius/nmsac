@@ -78,6 +78,7 @@ cor::WeightTensor cor::generate_weight_tensor(arma::mat const & source_pts,
  */
 bool cor::linear_programming(arma::colvec const & c, arma::mat const & A, arma::colvec const & b,
   double const & lower_bound, double const & upper_bound, arma::colvec & x_opt) noexcept {
+  // LCOV_EXCL_START
   //! check correct size
   if (c.n_rows != A.n_cols) {
     std::cout << static_cast<std::string>(__func__)
@@ -92,6 +93,7 @@ bool cor::linear_programming(arma::colvec const & c, arma::mat const & A, arma::
       << ": First and sixth arguments must have the same number of columns" << std::endl;
     return false;
   }
+  // LCOV_EXCL_STOP
 
   //! overwrite x_opt with infeasible values
   auto const infeasible_val = lower_bound - 1.;
@@ -132,6 +134,7 @@ bool cor::linear_programming(arma::colvec const & c, arma::mat const & A, arma::
   gor::MPSolver::ResultStatus const result_status = solver.Solve();
   //! check solution
   if (result_status != gor::MPSolver::OPTIMAL) {
+    // LCOV_EXCL_START
     LOG(INFO) << "The problem does not have an optimal solution!";
     if (result_status == gor::MPSolver::FEASIBLE) {
       LOG(INFO) << "A potentially suboptimal solution was found";
@@ -139,6 +142,7 @@ bool cor::linear_programming(arma::colvec const & c, arma::mat const & A, arma::
       LOG(INFO) << "The solver failed.";
     }
     return false;
+    // LCOV_EXCL_STOP
   }
 
   //! solver was successful - write output and return true

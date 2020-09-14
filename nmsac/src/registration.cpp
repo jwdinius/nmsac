@@ -32,6 +32,7 @@ namespace xfrm = transforms;
 bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
     nmsac::ConfigNMSAC const & config, arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
     arma::uvec & src_corr_ids, arma::uvec & tgt_corr_ids) noexcept {
+  // LCOV_EXCL_START
   //! check input validity
   if (src_sub.n_rows != 3) {
     std::cout << static_cast<std::string>(__func__) <<
@@ -42,6 +43,7 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
       ": Second argument must be a matrix with 3 rows" << std::endl;
     return false;
   }
+  // LCOV_EXCL_STOP
 
   /**
    * core computation is done by external lib function call;
@@ -71,13 +73,12 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
 
   /**
    * calculate best homography from correspondences
+   *
+   * @note size(src_sub) == size(tgt_sub), by construction, so there
+   * is no possibility of best_transform_method returning false
    */
   arma::mat44 H_opt;
-  if (!xfrm::best_fit_transform(src_sub, tgt_sub, corrs, H_opt)) {
-    std::cout << static_cast<std::string>(__func__) <<
-      ": Homography from correspondences failed" << std::endl;
-    return false;
-  }
+  static_cast<void>(xfrm::best_fit_transform(src_sub, tgt_sub, corrs, H_opt));
 
   auto const & m = corrs.size();  //! == config.k
   src_corr_ids.resize(m);

@@ -1,4 +1,4 @@
 docker build --network=host \
     $1 \
-    -t jdinius/nmsac \
+    -t jdinius/nmsac-nvidia \
     .
