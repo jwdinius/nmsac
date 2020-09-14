@@ -1,7 +1,7 @@
 ## Non-Minimal Sample Consensus `nmsac`
 
 [![CircleCI](https://circleci.com/gh/jwdinius/nmsac.svg?style=svg)](https://circleci.com/gh/jwdinius/nmsac)
-[![Coveralls](https://coveralls.io/repos/github/jwdinius/nmsac/badge.svg?branch=develop)](https://coveralls.io/github/jwdinius/nmsac?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/jwdinius/nmsac/badge.svg?branch=develop)](https://coveralls.io/github/jwdinius/nmsac?branch=develop)
 
 This repo builds on the ideas presented in the paper [SDRSAC](https://arxiv.org/abs/1904.03483) from CVPR2019.  Most of the framework comes from the original author's [matlab implementation](https://github.com/intellhave/SDRSAC), translated into C++ and using [armadillo](http://arma.sourceforge.net/) for working with matrices and vectors.  At it's core, SDRSAC is about employing a sample-and-consensus strategy, like that of [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus).  However, with non-minimal subsampling, higher quality motion hypotheses are obtained much faster than those obtained from RANSAC.
 
