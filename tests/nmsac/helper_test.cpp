@@ -51,6 +51,25 @@ class HelperTest : public ::testing::Test {
    const std::string data_path_;
 };
 
+TEST_F(HelperTest, ReadConfigFromFile) {
+  {
+    //! load valid config data
+    std::string config_file(data_path_ + "/config.json");
+    ConfigNMSAC config;
+    ASSERT_TRUE( read_config(config_file, config) );
+
+    //! a few fields are changed from the default just to check the read worked
+    ASSERT_EQ(config.points_per_sample, 15);
+    ASSERT_TRUE(config.print_status);
+  }
+  {
+    //! load valid config data
+    std::string config_file(data_path_ + "/missing-config.json");
+    ConfigNMSAC config;
+    ASSERT_FALSE( read_config(config_file, config) );
+  }
+}
+
 TEST_F(HelperTest, CountCorrespondences) {
   //! load unit test data from json
   std::ifstream ifs(data_path_ + "/count-correspondences.json");

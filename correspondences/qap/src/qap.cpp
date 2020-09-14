@@ -17,16 +17,6 @@
 namespace cor = correspondences;
 namespace cq = cor::qap;
 
-/** ConstrainedObjective::~ConstrainedObjective()
- * @brief destructor for constrained objective function
- *
- * @param[in]
- * @return
- *
- * @note nothing to do; resources are automatically deallocated
- */
-cq::ConstrainedObjective::~ConstrainedObjective() { }
-
 /** ConstrainedObjective::operator()
  * @brief operator overload for IPOPT
  *
@@ -79,16 +69,6 @@ void cq::ConstrainedObjective::operator()(cq::ConstrainedObjective::ADvector &fg
     fgrad[curr_idx] += z[i*(n_+1) + n_];
   }
 }
-
-/** QAP::~QAP()
- * @brief destructor for optimization wrapper class
- *
- * @param[in]
- * @return
- *
- * @note nothing to do; resources are automatically deallocated
- */
-cor::QAP::~QAP() { }
 
 /** QAP::linear_projection
  * @brief Solve linear assignment problem:
@@ -211,10 +191,8 @@ cor::QAP::ipopt_status_t cor::QAP::calc_optimum() noexcept {
 
   //! project onto permutation matrices; see Section 3.3 of the SDRSAC paper
   arma::colvec proj_opt(n_vars);
-  if (!linear_projection(proj_opt)) {
-    std::cout << "Linear projection failed; don't update optimum_" << std::endl;
-  } else {
-    //! overwrite optimum_
+  if (linear_projection(proj_opt)) {
+    //! only update optimum_ if linear_projection was successful
     optimum_ = proj_opt;
   }
   return ipopt_status_t::success;

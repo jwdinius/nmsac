@@ -38,7 +38,7 @@ jobs:
 
       - run:
           name: Run CMake
-          command: 'mkdir build ; cd build ; cmake .. -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=OFF'
+          command: 'mkdir build ; cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=OFF'
       - run:
           name: Compile
           command: 'cmake --build build'

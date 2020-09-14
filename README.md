@@ -85,7 +85,7 @@ You should now have an interactive shell to work from.
 
 ```shell
 $ cd {repo-root-dir}
-$ rm -rf build && mkdir build && cd build && cmake .. && make -j2
+$ rm -rf build && mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && make -j2
 ```
 #### Test
 
@@ -99,8 +99,8 @@ $ ctest
 To see graphical output (from python3):
 
 ```shell
-$ cd {repo-root-dir}/build  ## after following build steps above
-$ export PYTHONPATH=$(pwd):$PYTHONPATH
+$ cd {repo-root-dir} ## after following build steps above
+$ export PYTHONPATH=$PYTHONPATH:$(pwd)/build/bindings/python
 $ python3 ./scripts/wrapper-test.py -s
 ```
 

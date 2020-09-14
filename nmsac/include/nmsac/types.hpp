@@ -30,19 +30,20 @@ struct ConfigNMSAC {
     std::string json_str = std::string((std::istreambuf_iterator<char>(ifs)),
     std::istreambuf_iterator<char>());
     json json_data = json::parse(json_str);
-    random_seed = static_cast<uint64_t>(json_data["random_seed"]);  // NOLINT [runtime/int]
-    print_status = static_cast<bool>(json_data["print_status"]);
-    ps = static_cast<double>(json_data["ps"]);
-    max_iter = static_cast<size_t>(json_data["max_iter"]);
-    min_iter = static_cast<size_t>(json_data["min_iter"]);
-    k = static_cast<size_t>(json_data["k"]);
-    points_per_sample = static_cast<size_t>(json_data["points_per_sample"]);
-    epsilon = static_cast<double>(json_data["epsilon"]);
-    n_pair_thresh = static_cast<size_t>(json_data["n_pair_thresh"]);
-    pair_dist_thresh = static_cast<double>(json_data["pair_dist_thresh"]);
-    max_iter_icp = static_cast<size_t>(json_data["max_iter_icp"]);
-    tol_icp = static_cast<double>(json_data["tol_icp"]);
-    outlier_rej_icp = static_cast<double>(json_data["outlier_rej_icp"]);
+    auto const & nmsac_config = json_data["NMSAC"]["Config"];
+    random_seed = static_cast<uint64_t>(nmsac_config["random_seed"]);  // NOLINT [runtime/int]
+    print_status = static_cast<bool>(nmsac_config["print_status"]);
+    ps = static_cast<double>(nmsac_config["ps"]);
+    max_iter = static_cast<size_t>(nmsac_config["max_iter"]);
+    min_iter = static_cast<size_t>(nmsac_config["min_iter"]);
+    k = static_cast<size_t>(nmsac_config["k"]);
+    points_per_sample = static_cast<size_t>(nmsac_config["points_per_sample"]);
+    epsilon = static_cast<double>(nmsac_config["epsilon"]);
+    n_pair_thresh = static_cast<size_t>(nmsac_config["n_pair_thresh"]);
+    pair_dist_thresh = static_cast<double>(nmsac_config["pair_dist_thresh"]);
+    max_iter_icp = static_cast<size_t>(nmsac_config["max_iter_icp"]);
+    tol_icp = static_cast<double>(nmsac_config["tol_icp"]);
+    outlier_rej_icp = static_cast<double>(nmsac_config["outlier_rej_icp"]);
   }
 
   uint64_t random_seed;

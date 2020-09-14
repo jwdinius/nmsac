@@ -28,6 +28,7 @@ namespace xfrm = transforms;
 bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const & config,
     arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
     size_t & max_inliers, size_t & iter) noexcept {
+  // LCOV_EXCL_START
   //! check input size
   if (src_pts.n_rows != 3) {
     std::cout << static_cast<std::string>(__func__) <<
@@ -38,6 +39,7 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
       ": Second argument must be a matrix with 3 rows" << std::endl;
     return false;
   }
+  // LCOV_EXCL_STOP
 
   //! make a copy of src_pts and tgt_pts
   arma::mat const src_pts_orig = src_pts;
@@ -68,10 +70,12 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
     while (tgt_pts.n_cols > 2*n) {  // XXX(jwd): re-eval what this condition should be
       arma::mat const tgt_smpl = sample_cols(tgt_pts, n);
 
+      // LCOV_EXCL_START
       if (config.print_status) {
         std::cout << "Remaining target points to sample from: " <<
           tgt_pts.n_cols << std::endl;
       }
+      // LCOV_EXCL_STOP
 
       //! solve the nonminimal registration problem
       arma::mat33 R_nmr;
@@ -110,11 +114,13 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
             max_inliers = num_inliers;
             optimal_rot = R_icp;
             optimal_trans = t_icp;
+            // LCOV_EXCL_START
             if (config.print_status) {
               std::cout << "////////////////////////////////" << std::endl;
               std::cout << "Best so-far consensus size: " << max_inliers << std::endl;
               std::cout << "////////////////////////////////" << std::endl;
             }
+            // LCOV_EXCL_STOP
             //! compute stopping criteria
             auto const prob_I = static_cast<double>(max_inliers) /
               static_cast<double>(src_pts_orig.n_cols);
@@ -126,9 +132,11 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
       }
 
       if (iter >= static_cast<size_t>(Tmax)) {
+        // LCOV_EXCL_START
         if (config.print_status) {
           std::cout << "Algorithm converged.  Exiting..." << std::endl;
         }
+        // LCOV_EXCL_STOP
         stop = true;
         break;
       }

@@ -9,6 +9,7 @@ namespace cor = correspondences;
 
 bool transforms::best_fit_transform(arma::mat const & src_pts, arma::mat const & dst_pts,
     cor::correspondences_t const & corrs, arma::mat44 & H_optimal) noexcept {
+  // LCOV_EXCL_START
   //! input checking
   if (src_pts.n_rows != 3) {
     std::cout << static_cast<std::string>(__func__) <<
@@ -23,6 +24,7 @@ bool transforms::best_fit_transform(arma::mat const & src_pts, arma::mat const &
         ": First and second arguments must have same number of columns" << std::endl;
     return false;
   }
+  // LCOV_EXCL_STOP
 
   arma::mat source_pts_align(arma::size(src_pts));
   arma::mat target_pts_align(arma::size(dst_pts));
