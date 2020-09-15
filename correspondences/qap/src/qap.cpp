@@ -17,6 +17,18 @@
 namespace cor = correspondences;
 namespace cq = cor::qap;
 
+// LCOV_EXCL_START
+/** ConstrainedObjective::~ConstrainedObjective()
+ * @brief destructor for constrained objective function
+ *
+ * @param[in]
+ * @return
+ *
+ * @note nothing to do; resources are automatically deleted
+ */
+cq::ConstrainedObjective::~ConstrainedObjective() { }
+// LCOV_EXCL_STOP
+
 /** ConstrainedObjective::operator()
  * @brief operator overload for IPOPT
  *
@@ -69,6 +81,18 @@ void cq::ConstrainedObjective::operator()(cq::ConstrainedObjective::ADvector &fg
     fgrad[curr_idx] += z[i*(n_+1) + n_];
   }
 }
+
+// LCOV_EXCL_START
+/** QAP::~QAP()
+ * @brief destructor for optimization wrapper class
+ *
+ * @param[in]
+ * @return
+ *
+ * @note nothing to do; resources are automatically deleted
+ */
+cor::QAP::~QAP() { }
+// LCOV_EXCL_STOP
 
 /** QAP::linear_projection
  * @brief Solve linear assignment problem:

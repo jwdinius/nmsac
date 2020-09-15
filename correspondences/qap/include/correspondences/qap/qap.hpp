@@ -77,6 +77,14 @@ class ConstrainedObjective {
      n_constraints_ = m_ + n_ + 2;
    }
 
+   /** ConstrainedObjective::~ConstrainedObjective()
+    * @brief destructor for constrained objective function
+    *
+    * @param[in]
+    * @return
+    */
+   ~ConstrainedObjective();
+
    /** ConstrainedObjective::operator()
     * @brief operator overload for IPOPT
     *
@@ -170,6 +178,14 @@ class QAP : public CorrespondencesBase {
      ptr_obj_ = std::make_unique<qap::ConstrainedObjective>(source_pts, target_pts, config);
      optimum_.resize(ptr_obj_->state_length());
    }
+
+   /** QAP::~QAP()
+    * @brief destructor for optimization wrapper class
+    *
+    * @param[in]
+    * @return
+    */
+   ~QAP();
 
    /** QAP::calc_optimum()
     * @brief run IPOPT to find optimum for optimization objective

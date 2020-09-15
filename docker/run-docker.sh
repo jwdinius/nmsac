@@ -7,4 +7,4 @@ docker run -it --rm \
     --net host \
     --privileged \
     $1 \
-    jdinius/nmsac:latest
+    jdinius/nmsac-nvidia:0.3.0
