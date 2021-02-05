@@ -13,7 +13,8 @@
       "pair_dist_thresh" : 1e-2,
       "max_iter_icp" : 100,
       "tol_icp" : 1e-7,
-      "outlier_rej_icp": 0.2
+      "outlier_rej_icp": 0.2,
+      "algorithm": "qap"
     }
   }
 }

@@ -8,8 +8,8 @@
 #include "transforms/svd/svd.hpp"
 #include "correspondences/common/base.hpp"
 #include "correspondences/qap/qap.hpp"
+#include "correspondences/mc/mc.hpp"
 //! project headers
-#include "SysSetup.h"  // to define which algorithms to build and link (created by CMake)
 #include "nmsac/helper.hpp"
 #include "nmsac/registration.hpp"
 
@@ -51,7 +51,7 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
   cor::correspondences_t corrs;
   std::unique_ptr<cor::CorrespondencesBase> corr_object;
 
-  if constexpr (BUILD_QAP) {
+  if (config.algorithm == algorithms_e::qap) {
     /**
      * setup QAP - optimization of quadratic assignment problem
      */
@@ -60,6 +60,14 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
     reg_config.pairwise_dist_threshold = config.pair_dist_thresh;
     reg_config.n_pair_threshold = config.n_pair_thresh;
     corr_object = std::make_unique<cor::QAP>(src_sub, tgt_sub, reg_config);
+  } else if (config.algorithm == algorithms_e::mc) {
+    /**
+     * setup MC - maximum clique algorithm
+     */
+    cor::mc::Config mc_config;
+    mc_config.epsilon = config.epsilon;
+    mc_config.pairwise_dist_threshold = config.pair_dist_thresh;
+    corr_object = std::make_unique<cor::MC>(src_sub, tgt_sub, mc_config);
   }
 
   /**

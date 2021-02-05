@@ -32,6 +32,7 @@ bool nmsac::read_config(std::string const & config_file, nmsac::ConfigNMSAC & co
     config.max_iter_icp = static_cast<size_t>(nmsac_config["max_iter_icp"]);
     config.tol_icp = static_cast<double>(nmsac_config["tol_icp"]);
     config.outlier_rej_icp = static_cast<double>(nmsac_config["outlier_rej_icp"]);
+    config.algorithm = ConfigNMSAC::read_algorithm(static_cast<std::string>(nmsac_config["algorithm"]));
     return true;
   } catch (...) {
     std::cout << "Invalid config file" << std::endl;
