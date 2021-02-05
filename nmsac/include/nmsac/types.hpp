@@ -9,6 +9,10 @@
 //! project headers
 
 namespace nmsac {
+enum class algorithms_e {
+  qap, mc
+};
+
 struct ConfigNMSAC {
   using json = nlohmann::json;
   ConfigNMSAC() : random_seed(11011),
@@ -23,7 +27,8 @@ struct ConfigNMSAC {
     pair_dist_thresh(1e-2),
     max_iter_icp(100),
     tol_icp(1e-8),
-    outlier_rej_icp(0.2) { }
+    outlier_rej_icp(0.2),
+    algorithm(algorithms_e::qap) { }
 
   explicit ConfigNMSAC(std::string const & config_file) {
     std::ifstream ifs(config_file);
@@ -44,6 +49,22 @@ struct ConfigNMSAC {
     max_iter_icp = static_cast<size_t>(nmsac_config["max_iter_icp"]);
     tol_icp = static_cast<double>(nmsac_config["tol_icp"]);
     outlier_rej_icp = static_cast<double>(nmsac_config["outlier_rej_icp"]);
+    algorithm = read_algorithm(static_cast<std::string>(nmsac_config["algorithm"]));
+  }
+
+  static algorithms_e read_algorithm(std::string const & value) noexcept {
+    auto str_match = [](std::string const & token, std::string const & s) {
+      return ( token.size() == s.size()
+          && std::equal(token.begin(), token.end(), s.begin(), [](char a, char b) {
+            return a == b || std::tolower(a) == std::tolower(b); } ) );
+    };
+    if (str_match("qap", value)) {
+      return algorithms_e::qap;
+    } else if (str_match("mc", value)) {
+      return algorithms_e::mc;
+    } else {
+      return algorithms_e::qap;
+    }
   }
 
   uint64_t random_seed;
@@ -59,5 +80,6 @@ struct ConfigNMSAC {
   size_t max_iter_icp;
   double tol_icp;
   double outlier_rej_icp;
+  algorithms_e algorithm;
 };
 }  // namespace nmsac

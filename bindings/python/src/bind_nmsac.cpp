@@ -42,7 +42,7 @@ namespace pyNMSAC {
     auto te = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> dur = te - ts;
 
-    //! convert to numpy arrays (** copy required to avoid double free**)
+    //! convert to numpy arrays (**copy required to avoid double free**)
     py::array_t<double> rot_npy = carma::mat_to_arr(rot, /* copy? */ true);
     py::array_t<double> trans_npy = carma::col_to_arr(trans, /* copy? */ true);
 
@@ -52,6 +52,7 @@ namespace pyNMSAC {
 
 PYBIND11_MODULE(pyNMSAC, m) {
   //! expose nmsac::ConfigNMSAC to Python as "pyNMSAC.Config"
+  //! @todo figure out how to expose the algorithms_e type
   py::class_<ns::ConfigNMSAC>(m, "Config")
     .def(py::init<>())
     .def(py::init<std::string const &>())

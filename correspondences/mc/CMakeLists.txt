@@ -1,17 +1,11 @@
-find_package(OpenMP)
-find_package(Armadillo REQUIRED)
-find_package(MLPACK REQUIRED)
-find_package(nlohmann_json 3.7.0 REQUIRED)
-find_package(pybind11 REQUIRED)
-find_package(carma REQUIRED)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(target nmsac)
+find_package(Armadillo REQUIRED)
+
+set(target mc)
 
 add_library(${target} SHARED
-  src/helper.cpp
-  src/registration.cpp
-  src/sampling.cpp
-  src/main.cpp
+  src/mc.cpp
 )
 
 # Create namespaced alias
@@ -19,11 +13,9 @@ add_library(${PROJECT_NAME}::${target} ALIAS ${target})
 
 target_include_directories(${target}
     PRIVATE
-    ${carma_INCLUDE_DIR}
 
     PUBLIC
     ${ARMADILLO_INCLUDE_DIRS}
-    ${MLPACK_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     INTERFACE
@@ -32,14 +24,11 @@ target_include_directories(${target}
 
 target_link_libraries(${target}
     PRIVATE
-    transforms
 
     PUBLIC
     ${ARMADILLO_LIBRARIES}
-    ${MLPACK_LIBRARIES}
-    correspondences
-    nlohmann_json::nlohmann_json
-    $<$<BOOL:OpenMP_FOUND>:OpenMP::OpenMP_CXX>
+    correspondences::common
+    correspondences::graph
 
     INTERFACE
 )

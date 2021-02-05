@@ -7,11 +7,15 @@
 #include "types.hpp"
 
 namespace correspondences {
-//! very thin wrapper around correspondence algorithms
+/**
+ * @interface CorrespondencesBase
+ *
+ * @brief very thin interface for correspondences algorithms
+ */
 class CorrespondencesBase {
  public:
    CorrespondencesBase() { }
-   ~CorrespondencesBase() { }  // gotta define this for abstract base classes
+   ~CorrespondencesBase() { }  // must define this for abstract base classes
    //! every child must implement the following method
    virtual status_e calc_correspondences(correspondences_t & correspondences) = 0;
 };

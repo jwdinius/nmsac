@@ -39,6 +39,70 @@ target_compile_features(common_test
         cxx_std_17
 )
 
+add_executable(graph_test ${main_src} graph_test.cpp)
+
+# Create namespaced alias
+add_executable(${PROJECT_NAME}::graph_test ALIAS graph_test)
+add_test(${PROJECT_NAME}::graph_test graph_test)
+
+target_include_directories(graph_test
+    PRIVATE
+
+    PUBLIC
+
+    INTERFACE
+)
+
+target_link_libraries(graph_test
+    PRIVATE
+    ${ARMADILLO_LIBRARIES}
+    correspondences::common
+    correspondences::graph
+    gtest_main
+
+    PUBLIC
+
+    INTERFACE
+)
+
+target_compile_features(graph_test
+    PRIVATE
+        cxx_std_17
+)
+
+add_executable(mc_test ${main_src} mc_test.cpp)
+
+# Create namespaced alias
+add_executable(${PROJECT_NAME}::mc_test ALIAS mc_test)
+add_test(${PROJECT_NAME}::mc_test mc_test)
+
+target_include_directories(mc_test
+    PRIVATE
+    ${TEST_DATA_INCLUDE}
+
+    PUBLIC
+
+    INTERFACE
+)
+
+target_link_libraries(mc_test
+    PRIVATE
+    ${ARMADILLO_LIBRARIES}
+    correspondences::common
+    correspondences::graph
+    correspondences::mc
+    gtest_main
+
+    PUBLIC
+
+    INTERFACE
+)
+
+target_compile_features(mc_test
+    PRIVATE
+        cxx_std_17
+)
+
 if (BUILD_QAP)
   add_executable(qap_test ${main_src} qap_test.cpp)
 
