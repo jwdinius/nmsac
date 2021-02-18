@@ -4,7 +4,7 @@ orbs:
 jobs:
   lint:
     docker:
-      - image: jdinius/nmsac:0.3.0
+      - image: jdinius/nmsac:0.4.0
     
     steps:
       - checkout
@@ -31,14 +31,14 @@ jobs:
 
   build_standard:
     docker:
-      - image: jdinius/nmsac:0.3.0
+      - image: jdinius/nmsac:0.4.0
 
     steps:
       - checkout
 
       - run:
           name: Run CMake
-          command: 'mkdir build ; cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=OFF'
+          command: 'mkdir build ; cd build ; cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON'
       - run:
           name: Compile
           command: 'cmake --build build'
@@ -48,14 +48,15 @@ jobs:
   
   code_coverage:
     docker:
-      - image: jdinius/nmsac:0.3.0
+      - image: jdinius/nmsac:0.4.0
 
     steps:
       - checkout
+      - run: 'sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DE19EB17684BA42D'
       - run: 'sudo apt-get update && sudo apt-get install -y nodejs npm'
       - run:
           name: Run CMake (with gcov output)
-          command: 'mkdir build ; cd build ; cmake .. -DBUILD_TESTS=ON -DBUILD_QAP=ON -DCODE_COVERAGE=ON'
+          command: 'mkdir build ; cd build ; cmake .. -DBUILD_TESTS=ON -DCODE_COVERAGE=ON'
       - run:
           name: Compile
           command: 'cmake --build build'

@@ -10,19 +10,26 @@
 namespace correspondences {
 namespace mc {
 
-/** @struct Config
- * @brief configuration parameters for optimization algorithm 
- * @var Config::epsilon
- * threshold below which to declare a pairwise correspondence
- * @var Config::pairwise_dist_threshold
- * threshold above which to allow pairwise correspondence; this prevents considering correspondences
- * that may have high ambiguity
+/** @struct Config : CorrespondencesConfigBase
  * @var Config::algo
  * max clique algorithm implementation to call
  */
-struct Config {
-  double epsilon;
-  double pairwise_dist_threshold;
+struct Config : CorrespondencesConfigBase {
+  Config()
+    : CorrespondencesConfigBase() {
+      set_defaults();
+    }
+
+  explicit Config(nlohmann::json & config) :
+    CorrespondencesConfigBase(config) {
+      set_defaults();
+      json_utils::check_for_param(config, "algorithm", algo);
+    }
+
+  void set_defaults() noexcept final {
+    algo = graph::max_clique_algo_e::bnb_basic;
+  }
+
   graph::max_clique_algo_e algo;
 };
 }  // namespace mc
@@ -42,7 +49,7 @@ class MC : public CorrespondencesBase {
     * @return
     */
    explicit MC(arma::mat const & source_pts,
-       arma::mat const & target_pts, mc::Config const & config)
+       arma::mat const & target_pts, mc::Config config)
      : config_(config)
      , graph_(source_pts, target_pts,
          config_.epsilon, config_.pairwise_dist_threshold)
@@ -76,7 +83,7 @@ class MC : public CorrespondencesBase {
 
  private:
    mc::Config config_;  //! initialization data struct
-   graph::UndirectedGraph graph_;  //! NOLINT(linelength) pairwise correspondences consistency graph
-   size_t n_;  //! NOLINT(linelength) no. of target points (this is for extracting correspondence pairs from vertices)
+   graph::UndirectedGraph graph_;  // NOLINT [linelength] pairwise correspondences consistency graph
+   size_t n_;  // NOLINT [linelength] no. of target points (this is for extracting correspondence pairs from vertices)
 };
 }  // namespace correspondences

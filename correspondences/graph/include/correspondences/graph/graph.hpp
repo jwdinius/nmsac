@@ -91,7 +91,7 @@ class UndirectedGraph {
     * @note adds vertex to graph if it doesn't already exist
     */
    void add_edge(edge_t e) noexcept;
-   
+
    /**
     * UndirectedGraph::get_adjacency(vertex_t const&)
     *
@@ -118,7 +118,7 @@ class UndirectedGraph {
     * @return degree of input vertex (or 0, if vertex is not in the graph)
     */
    size_t get_vertex_degree(vertex_t const & v) const noexcept {
-     return (vertices_.find(v) != vertices_.end()) ? get_adjacency(v).size() : 0; 
+     return (vertices_.find(v) != vertices_.end()) ? get_adjacency(v).size() : 0;
    }
 
    /**
@@ -167,7 +167,7 @@ class UndirectedGraph {
     */
    void add_adjacency(edge_t e) noexcept;
 
-   std::unordered_map<vertex_t, adjacency_t> adjacency_;  // NOLINT(linelength) key-value store for vertex and its adjacency set
+   std::unordered_map<vertex_t, adjacency_t> adjacency_;  // NOLINT [linelength] key-value store for vertex and its adjacency set
    vertices_t vertices_;  // set of graph vertices
    edges_t edges_;  // set of graph edges
 };
@@ -202,7 +202,8 @@ coloring_t greedy_vertices_coloring(vertices_t const & vertices,
  * @brief available algorithms for finding maximum clique
  */
 enum class max_clique_algo_e {
-  bnb_basic, bnb_color
+  bnb_basic = 0,
+  bnb_color = 1
 };
 
 /**

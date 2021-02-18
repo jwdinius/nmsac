@@ -47,6 +47,12 @@ RUN cd /usr/local/src \
     && make install \
     && cd ../.. && rm -rf cppcheck*
 
+# pip install
+RUN python3 --version
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --no-cache-dir pykitti==0.3.1
+RUN python3 -m pip install --no-cache-dir opencv-python==4.5.1.48
+
 # setup user env at the end
 # -m option creates a fake writable home folder
 RUN adduser --disabled-password --gecos '' $username

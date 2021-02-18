@@ -12,34 +12,6 @@
 using json = nlohmann::json;
 namespace xfrm = transforms;
 
-bool nmsac::read_config(std::string const & config_file, nmsac::ConfigNMSAC & config) noexcept {
-  try {
-    std::ifstream ifs(config_file);
-    std::string json_str = std::string((std::istreambuf_iterator<char>(ifs)),
-        std::istreambuf_iterator<char>());
-    json json_data = json::parse(json_str);
-    auto const & nmsac_config = json_data["NMSAC"]["Config"];
-    config.random_seed = static_cast<uint64_t>(nmsac_config["random_seed"]);  // NOLINT [runtime/int]
-    config.print_status = static_cast<bool>(nmsac_config["print_status"]);
-    config.ps = static_cast<double>(nmsac_config["ps"]);
-    config.max_iter = static_cast<size_t>(nmsac_config["max_iter"]);
-    config.min_iter = static_cast<size_t>(nmsac_config["min_iter"]);
-    config.k = static_cast<size_t>(nmsac_config["k"]);
-    config.points_per_sample = static_cast<size_t>(nmsac_config["points_per_sample"]);
-    config.epsilon = static_cast<double>(nmsac_config["epsilon"]);
-    config.n_pair_thresh = static_cast<size_t>(nmsac_config["n_pair_thresh"]);
-    config.pair_dist_thresh = static_cast<double>(nmsac_config["pair_dist_thresh"]);
-    config.max_iter_icp = static_cast<size_t>(nmsac_config["max_iter_icp"]);
-    config.tol_icp = static_cast<double>(nmsac_config["tol_icp"]);
-    config.outlier_rej_icp = static_cast<double>(nmsac_config["outlier_rej_icp"]);
-    config.algorithm = ConfigNMSAC::read_algorithm(static_cast<std::string>(nmsac_config["algorithm"]));
-    return true;
-  } catch (...) {
-    std::cout << "Invalid config file" << std::endl;
-    return false;
-  }
-}
-
 /**
  * @brief Count correspondences between two sets of points 
  *

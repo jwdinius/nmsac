@@ -66,7 +66,7 @@ TEST_F(MCTest, FullSourceMatchingBasic) {
   config.epsilon = 0.015;
   config.pairwise_dist_threshold = 0.015;
   config.algo = cg::max_clique_algo_e::bnb_basic;
-  
+
   //! source pts (read first so that we can use min_corr == no. of source points)
   auto const rows_S = json_data["source_pts"].size();
   auto const cols_S = json_data["source_pts"][0].size();
@@ -124,7 +124,7 @@ TEST_F(MCTest, PartialSourceMatchingBasic) {
   std::string json_str = std::string((std::istreambuf_iterator<char>(ifs)),
       std::istreambuf_iterator<char>());
   json json_data = json::parse(json_str);
- 
+
   //! setup configuration struct for test
   //! @note this algorithm is very sensitive to the epsilon and pairwise_dist_threshold settings!!
   cm::Config config;
@@ -196,7 +196,7 @@ TEST_F(MCTest, FullSourceMatchingColor) {
   config.epsilon = 0.015;
   config.pairwise_dist_threshold = 0.015;
   config.algo = cg::max_clique_algo_e::bnb_color;
-  
+
   //! source pts (read first so that we can use min_corr == no. of source points)
   auto const rows_S = json_data["source_pts"].size();
   auto const cols_S = json_data["source_pts"][0].size();
@@ -254,7 +254,7 @@ TEST_F(MCTest, PartialSourceMatchingColor) {
   std::string json_str = std::string((std::istreambuf_iterator<char>(ifs)),
       std::istreambuf_iterator<char>());
   json json_data = json::parse(json_str);
- 
+
   //! setup configuration struct for test
   //! @note this algorithm is very sensitive to the epsilon and pairwise_dist_threshold settings!!
   cm::Config config;

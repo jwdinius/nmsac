@@ -2,7 +2,7 @@
 //! c/c++ headers
 #include <algorithm>
 //! dependency headers
-#include <mlpack/core.hpp>
+#include <armadillo>
 //! project headers
 
 namespace nmsac {

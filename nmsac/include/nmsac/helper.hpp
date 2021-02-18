@@ -7,7 +7,6 @@
 #include "types.hpp"
 
 namespace nmsac {
-bool read_config(std::string const & config_file, ConfigNMSAC & config) noexcept;
 /**
  * @brief Count correspondences between two sets of points 
  *

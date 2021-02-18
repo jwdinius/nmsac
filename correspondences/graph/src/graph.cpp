@@ -3,8 +3,8 @@
 #include <limits>
 #include <vector>
 //! dependency headers
-#include "correspondences/common/utilities.hpp"
 //! project headers
+#include "correspondences/common/utilities.hpp"
 #include "correspondences/graph/graph.hpp"
 
 //! namespaces
@@ -39,7 +39,7 @@ cg::UndirectedGraph::UndirectedGraph(vertices_t const & vertices,
     std::cerr << "Graph is invalid!!" << std::endl;
     exit(INVALID_GRAPH);
   }
-  std::for_each(edges_.cbegin(), edges_.cend(), [&](auto &e){ add_adjacency(e); }); 
+  std::for_each(edges_.cbegin(), edges_.cend(), [&](auto &e){ add_adjacency(e); });
 }
 
 /**
@@ -110,7 +110,7 @@ cg::UndirectedGraph::~UndirectedGraph() { }
 void cg::UndirectedGraph::add_edge(edge_t e) noexcept {
   auto const & v1 = e.first;
   auto const & v2 = e.second;
-  
+
   if (v1 == v2) return;
 
   //! v1, v2 will only be added if they are missing (see std::set docs)
@@ -162,7 +162,7 @@ void cg::UndirectedGraph::add_vertex(vertex_t v) noexcept {
 void cg::UndirectedGraph::add_adjacency(edge_t e) noexcept {
   auto const & v1 = e.first;
   auto const & v2 = e.second;
-  
+
   if (v1 == v2) return;
 
   /**
@@ -202,7 +202,8 @@ void cg::UndirectedGraph::add_adjacency(edge_t e) noexcept {
  */
 size_t cg::next_available_color(std::list<size_t> const & colors) noexcept {
   std::vector<size_t> count(colors.size() + 1, 0);
-  std::for_each(colors.cbegin(), colors.cend(), [&](auto &c){ if (c < count.size()) { ++count[c]; } } );
+  std::for_each(colors.cbegin(), colors.cend(), [&](auto &c){
+      if (c < count.size()) { ++count[c]; } } );
   for (size_t c = 0; c < count.size(); ++c) {
     if (count[c] == 0) return c;
   }
@@ -222,7 +223,8 @@ size_t cg::next_available_color(std::list<size_t> const & colors) noexcept {
  * @param UndirectedGraph, graph containing vertices to color
  * @return size_t, smallest unsigned integer not in input list
  */
-cg::coloring_t cg::greedy_vertices_coloring(vertices_t const & vertices, UndirectedGraph const & graph) noexcept {
+cg::coloring_t cg::greedy_vertices_coloring(vertices_t const & vertices,
+    UndirectedGraph const & graph) noexcept {
   //! create empty coloring - this will be filled later
   coloring_t coloring = {};
   //! create coloring helper function
@@ -238,7 +240,8 @@ cg::coloring_t cg::greedy_vertices_coloring(vertices_t const & vertices, Undirec
   };
 
   //! create graph coloring based on vertex degree
-  std::for_each(vertices.cbegin(), vertices.cend(), [&](auto &v) { coloring[v] = next_available_color( f(v) ); });
+  std::for_each(vertices.cbegin(), vertices.cend(), [&](auto &v) {
+      coloring[v] = next_available_color( f(v) ); });
   return coloring;
 }
 
@@ -367,12 +370,12 @@ void cg::find_max_clique(UndirectedGraph const & graph, max_clique_algo_e const 
 
   if (algo == max_clique_algo_e::bnb_basic) {
     //! call basic bnb implementation
-    max_cliq_bnb_basic(graph, graph.get_vertices(), R, R_best); 
+    max_cliq_bnb_basic(graph, graph.get_vertices(), R, R_best);
   } else if (algo == max_clique_algo_e::bnb_color) {
     //! call colored bnb implementation
     //! - first, create coloring of vertices in the entire graph to improve
     //! - candidate vertices selection
     auto f = greedy_vertices_coloring(graph.get_vertices(), graph);
-    max_cliq_bnb_color(graph, graph.get_vertices(), f, R, R_best); 
+    max_cliq_bnb_color(graph, graph.get_vertices(), f, R, R_best);
   }
 }
