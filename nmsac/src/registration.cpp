@@ -10,8 +10,8 @@
 #include "correspondences/qap/qap.hpp"
 #include "correspondences/mc/mc.hpp"
 //! project headers
-#include "nmsac/helper.hpp"
 #include "nmsac/registration.hpp"
+#include "nmsac/helper.hpp"
 
 namespace cor = correspondences;
 namespace xfrm = transforms;
@@ -30,7 +30,7 @@ namespace xfrm = transforms;
  * @return true if all algorithm stages were successful, false otherwise
  */
 bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
-    nmsac::ConfigNMSAC const & config, arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
+    nmsac::Config const & config, arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
     arma::uvec & src_corr_ids, arma::uvec & tgt_corr_ids) noexcept {
   // LCOV_EXCL_START
   //! check input validity
@@ -55,19 +55,16 @@ bool nmsac::registration(arma::mat const & src_sub, arma::mat const & tgt_sub,
     /**
      * setup QAP - optimization of quadratic assignment problem
      */
-    cor::qap::Config reg_config;
-    reg_config.epsilon = config.epsilon;
-    reg_config.pairwise_dist_threshold = config.pair_dist_thresh;
-    reg_config.n_pair_threshold = config.n_pair_thresh;
-    corr_object = std::make_unique<cor::QAP>(src_sub, tgt_sub, reg_config);
+    std::shared_ptr<cor::qap::Config> qap_config =
+      std::dynamic_pointer_cast<cor::qap::Config>(config.algo_config);
+    corr_object = std::make_unique<cor::QAP>(src_sub, tgt_sub, *qap_config);
   } else if (config.algorithm == algorithms_e::mc) {
     /**
      * setup MC - maximum clique algorithm
      */
-    cor::mc::Config mc_config;
-    mc_config.epsilon = config.epsilon;
-    mc_config.pairwise_dist_threshold = config.pair_dist_thresh;
-    corr_object = std::make_unique<cor::MC>(src_sub, tgt_sub, mc_config);
+    std::shared_ptr<cor::mc::Config> mc_config =
+      std::dynamic_pointer_cast<cor::mc::Config>(config.algo_config);
+    corr_object = std::make_unique<cor::MC>(src_sub, tgt_sub, *mc_config);
   }
 
   /**

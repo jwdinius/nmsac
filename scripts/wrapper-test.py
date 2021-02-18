@@ -107,22 +107,13 @@ if __name__ == "__main__":
         plt.show()
 
     if args.nmsac:
-        pc = nmsac.Config()
-        ''' Update the values below, if you wish
-        pc.randomSeed = 11011
-        pc.printStatus = True
-        pc.ps = 0.99
-        pc.maxIter = 10000
-        pc.minIter = 5
-        pc.k = 4
-        pc.pointsPerSample = 12
-        pc.epsilon = 0.015
-        pc.nPairThresh = 5
-        pc.pairDistThresh = 0.01
-        pc.maxIterIcp = 100
-        pc.tolIcp = 1e-8
-        pc.outlierRejRatioIcp = 0.2
-        '''
+        json_config = {"Config": {"random_seed" : 11011, "print_status" : True, "ps" : 0.99,
+                                  "max_iter" : 1e4, "min_iter" : 5, "k" : 4, "points_per_sample" : 45,
+                                  "max_iter_icp" : 100, "tol_icp" : 1e-8, "outlier_rej_icp": 0.2,
+                                  "mc": {"epsilon" :  0.015, "pairwise_dist_threshold" : 1e-2, "algo" : 0}
+                                  }
+                       }
+        json_str = json.dumps(json_config)
 
         source_pts = points.T
         source_pts = np.vstack((source_pts, np.ones((1, source_pts.shape[1]))))
@@ -134,7 +125,7 @@ if __name__ == "__main__":
         target = np.copy(target_pts[:3, :])
         ##########################################################
         # make the call
-        status, Rn, tn, numInliers, numIterations, callTime = nmsac.execute(source, target, pc)
+        status, Rn, tn, numInliers, numIterations, callTime = nmsac.execute(source, target, json_str)
         if not status: 
             print("NMSAC call failed")
         # grab output

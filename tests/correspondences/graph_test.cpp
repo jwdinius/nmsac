@@ -128,7 +128,6 @@ TEST_F(GraphTest, GreedyVerticesColoringTest) {
 
   UndirectedGraph g(true_vertices, true_edges);
   ASSERT_TRUE( greedy_vertices_coloring(true_vertices, g) == true_coloring );
-  
 }
 
 TEST_F(GraphTest, SimpleGraphMCQTestBasic) {

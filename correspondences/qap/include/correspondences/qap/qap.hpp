@@ -2,7 +2,6 @@
 //! c/c++ headers
 #include <cmath>
 #include <functional>
-#include <limits>
 #include <map>
 #include <memory>
 #include <tuple>
@@ -23,30 +22,34 @@ namespace correspondences {
 namespace qap {
 /** @struct Config
  * @brief configuration parameters for optimization algorithm 
- * @var Config::epsilon
- * threshold below which to declare a pairwise correspondence
- * @var Config::pairwise_dist_threshold
- * threshold above which to allow pairwise correspondence; this prevents considering correspondences
- * that may have high ambiguity
  * @var Config::corr_threshold
  * value in optimum solution to declare a correspondence as valid {\in (0, 1)}
  * @var Config::n_pair_threshold
  * minimum number of pairwise consistencies 
+ * @var Config::min_corr
+ * number of correspondences/matches to identify during optimization 
  */
-struct Config {
-  Config() :
-    epsilon(1e-1),
-    pairwise_dist_threshold(1e-1),
-    corr_threshold(0.9),
-    n_pair_threshold(std::numeric_limits<size_t>::signaling_NaN()),
-    min_corr(5) { }
-  explicit Config(nlohmann::json const & config) :
-    epsilon(static_cast<double>(config.at("epsilon"))),
-    pairwise_dist_threshold(static_cast<double>(config.at("pairwise_dist_threshold"))),
-    corr_threshold(static_cast<double>(config.at("corr_threshold"))),
-    n_pair_threshold(static_cast<size_t>(config.at("n_pair_threshold"))),
-    min_corr(static_cast<size_t>(config.at("min_corr"))) { }
-  double epsilon, pairwise_dist_threshold, corr_threshold;
+struct Config : CorrespondencesConfigBase {
+  Config()
+    : CorrespondencesConfigBase() {
+      set_defaults();
+    }
+
+  explicit Config(nlohmann::json & config) :
+    CorrespondencesConfigBase(config) {
+      set_defaults();
+      json_utils::check_for_param(config, "corr_threshold", corr_threshold);
+      json_utils::check_for_param(config, "n_pair_threshold", n_pair_threshold);
+      json_utils::check_for_param(config, "min_corr", min_corr);
+    }
+
+  void set_defaults() noexcept final {
+    corr_threshold = 0.9;
+    n_pair_threshold = 5;
+    min_corr = 5;
+  }
+
+  double corr_threshold;
   size_t n_pair_threshold, min_corr;
 };
 
@@ -174,7 +177,12 @@ class QAP : public CorrespondencesBase {
     * @return
     */
    explicit QAP(arma::mat const & source_pts,
-       arma::mat const & target_pts, qap::Config const & config) : config_(config) {
+       arma::mat const & target_pts, qap::Config config) : config_(config) {
+     /*std::cout << "####" << std::endl;
+     std::cout << config_.epsilon << ", " << config_.pairwise_dist_threshold << ", "
+       << config_.corr_threshold << ", " << config_.n_pair_threshold << ", "
+       << config_.min_corr << std::endl;
+     std::cout << "####" << std::endl;*/
      ptr_obj_ = std::make_unique<qap::ConstrainedObjective>(source_pts, target_pts, config);
      optimum_.resize(ptr_obj_->state_length());
    }

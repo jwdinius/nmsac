@@ -4,7 +4,6 @@
 #include <string>
 #include <limits>
 //! dependency headers
-#include <mlpack/core.hpp>
 #include "transforms/icp/icp.hpp"
 //! project headers
 #include "nmsac/helper.hpp"
@@ -19,13 +18,14 @@ namespace xfrm = transforms;
  *
  * @param [in] src_pts source points to transform
  * @param [in] tgt_pts target points
+ * @param [in] json_config configurable parameters in json format
  * @param [in][out] optimal_rot rotation matrix of best transformation
  * @param [in][out] optimal_trans translation of best transformation
  * @param [in][out] max_inliers number of inlying point correspondences between src_pts and tgt_pts
  * @param [in][out] iter number of iterations
  * @return
  */
-bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const & config,
+bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nlohmann::json & json_config,
     arma::mat33 & optimal_rot, arma::vec3 & optimal_trans,
     size_t & max_inliers, size_t & iter) noexcept {
   // LCOV_EXCL_START
@@ -44,6 +44,12 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
   //! make a copy of src_pts and tgt_pts
   arma::mat const src_pts_orig = src_pts;
   arma::mat const tgt_pts_orig = tgt_pts;
+
+  //! read config data
+  Config config(json_config);
+  std::cout << "CONFIGURATION FOR NMSAC:" << std::endl;
+  std::cout << config << std::endl;
+  config.print_status = true;
 
   //! initializations
   auto const & n = config.points_per_sample;
@@ -104,7 +110,7 @@ bool nmsac::main(arma::mat src_pts, arma::mat tgt_pts, nmsac::ConfigNMSAC const 
           arma::mat const src_pts_orig_xform = R_icp * src_pts_orig +
             arma::repmat(t_icp, 1, src_pts_orig.n_cols);
           auto const num_inliers = count_correspondences(src_pts_orig_xform,
-              tgt_tree, config.epsilon);
+              tgt_tree, config.algo_config->epsilon);
 
           //! increase iteration count
           ++iter;
