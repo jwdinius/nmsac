@@ -98,4 +98,34 @@ target_compile_features(sampling_test
         cxx_std_17
 )
 
+add_executable(types_test ${main_src} types_test.cpp)
+
+# Create namespaced alias
+add_executable(${PROJECT_NAME}::types_test ALIAS types_test)
+add_test(${PROJECT_NAME}::types_test types_test)
+
+target_include_directories(types_test
+    PRIVATE
+    ${TEST_DATA_INCLUDE}
+
+    PUBLIC
+
+    INTERFACE
+)
+
+target_link_libraries(types_test
+    PRIVATE
+    gtest_main
+
+    PUBLIC
+    nmsac
+
+    INTERFACE
+)
+
+target_compile_features(types_test
+    PRIVATE
+        cxx_std_17
+)
+
 
