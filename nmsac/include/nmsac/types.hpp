@@ -24,6 +24,18 @@ struct Config {
   using json = nlohmann::json;
   Config() {
     set_defaults();
+    key_val["random_seed"] = std::to_string(random_seed);
+    key_val["print_status"] = print_status ? "true" : "false";
+    key_val["ps"] = double_prec_str(ps, 3);
+    key_val["k"] = std::to_string(k);
+    key_val["max_iter"] = std::to_string(max_iter);
+    key_val["min_iter"] = std::to_string(min_iter);
+    key_val["points_per_sample"] = std::to_string(points_per_sample);
+    key_val["max_iter_icp"] = std::to_string(max_iter_icp);
+    key_val["tol_icp"] = double_prec_str(tol_icp, 3);
+    key_val["outlier_rej_icp"] = double_prec_str(outlier_rej_icp, 3);
+    json empty = {};
+    setup_algorithm(empty);
   }
 
   inline std::string double_prec_str(double const& val,

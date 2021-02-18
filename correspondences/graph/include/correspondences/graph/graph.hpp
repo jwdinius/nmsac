@@ -105,8 +105,10 @@ class UndirectedGraph {
      if (adjacency_.find(v) != adjacency_.end()) {
        return adjacency_.at(v);
      }
+     // LCOV_EXCL_START
      adjacency_t out = {};
      return out;
+     // LCOV_EXCL_STOP
    }
 
    /**

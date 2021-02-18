@@ -18,7 +18,9 @@ namespace cg = correspondences::graph;
  *
  * @note creates an empty graph
  */
+// LCOV_EXCL_START
 cg::UndirectedGraph::UndirectedGraph() { }
+// LCOV_EXCL_STOP
 
 
 /**

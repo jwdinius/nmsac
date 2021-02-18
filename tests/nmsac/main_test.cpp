@@ -106,7 +106,7 @@ TEST_F(MainTest, CubeTestQap) {
 
   //! make the call
   nlohmann::json json_config = {
-    { "qap", {
+    { "qAp", { /* this will test json_utils::convert_keys */
                {"epsilon", 0.015},
                {"pairwise_dist_threshold", 1e-2},
                {"corr_threshold", 0.9},
