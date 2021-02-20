@@ -40,7 +40,7 @@ Within each subproject, you will find a separate `README` describing that subpro
 
 The code in each subproject follows a common standard and is well-commented.  [Unit tests](./tests) are provided for key functionality but some things may remain unclear.  If this is the case, please create an [issue](https://github.com/jwdinius/nmsac/issues).
 
-For desired formatting, please see the script [linter.sh](scripts/linter.sh) and the [`cpplint` docs](https://github.com/cpplint/cpplint).  I will eventually add Travis integration to check each PR, but until then I use the linter script.
+For desired formatting, please see the script [linter.sh](scripts/linter.sh) and the [`cpplint` docs](https://github.com/cpplint/cpplint).
 
 ## Quick Start
 

@@ -3,8 +3,10 @@ Implementation for Algorithm 2 from the [top-level README](../README.md).  For a
 
 This subproject is organized in the following way:
 
-* [`common`](./common) - common utility code and type definitions (including `CorrespondencesBase` definition, which is used to wrap all algorithm implementations for computing correspondences)
+* [`common`](./common) - common utility code and base class definitions
+* [`graph`](./graph) - methods for constructing and working with undirected graphs (e.g. for [`mc`](./mc) algorithm)
 * [`qap`](./qap) - implements an optimization-based solution to the correspondences problem.
+* [`mc`](./mc) - implements a graph-based solution to the correspondences problem.
 * _insert new algorithm here!  Submit a PR, if you dare!_
 
 Each new algorithm implemented should follow the organization of the [qap](./qap) subdirectory:
@@ -15,4 +17,4 @@ Each new algorithm implemented should follow the organization of the [qap](./qap
 * add appropriate unit tests in folder rooted [here](../tests)
 * modify parent `CMakeLists.txt` files to make sure your implementation and tests get built
 
-When in doubt, just follow the `qap` pattern!
+When in doubt, just follow the provided patterns!
