@@ -9,15 +9,7 @@ option(BUILD_MC "build correspondences::mc target" ON)
 option(BUILD_PYTHON_BINDINGS "build python bindings for nmsac::main method" ON)
 option(CODE_COVERAGE "build for code coverage reporting" OFF)
 
-#[[
-file(GENERATE
-  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/SysSetup.h"
-  CONTENT "inline constexpr bool BUILD_QAP = static_cast<bool>($<BOOL:BUILD_QAP>);"
-  )
-set(SYS_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR})
-#]]
-
-if (CODE_COVERAGE)
+if (${CODE_COVERAGE})
   add_compile_options(-Wall -O0 -g -Wno-deprecated-declarations --coverage)
   add_link_options(--coverage)
 else()
@@ -30,11 +22,11 @@ add_subdirectory(transforms)
 add_subdirectory(nmsac)
 
 # TODO(jwd): if/when more bindings are added, put "OR" condition here
-if (BUILD_PYTHON_BINDINGS)
+if (${BUILD_PYTHON_BINDINGS})
   add_subdirectory(bindings)
 endif()
 
-if (BUILD_TESTS)
+if (${BUILD_TESTS})
   enable_testing()
   add_subdirectory(tests)
 endif()

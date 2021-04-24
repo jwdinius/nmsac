@@ -39,7 +39,7 @@ target_link_libraries(${target}
     ${MLPACK_LIBRARIES}
     correspondences
     nlohmann_json::nlohmann_json
-    $<$<BOOL:OpenMP_FOUND>:OpenMP::OpenMP_CXX>
+    $<$<BOOL:${OpenMP_FOUND}>:OpenMP::OpenMP_CXX>
 
     INTERFACE
 )
